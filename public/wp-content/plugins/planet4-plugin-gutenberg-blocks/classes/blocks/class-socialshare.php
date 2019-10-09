@@ -37,11 +37,10 @@ class Socialshare extends Base_Block {
 
 		$attributes = shortcode_atts(
 			[
+				'title'               => '',
 				'id'                  => '',
 				'focus_image'         => '',
 				'opacity'             => '',
-				'mailing_list_iframe' => '',
-				'iframe_url'          => '',
 			],
 			$attributes,
 			'shortcake_social_share'
@@ -51,7 +50,7 @@ class Socialshare extends Base_Block {
 	}
 
 	/**
-	 * Happypoint constructor.
+	 * Socialshare constructor.
 	 */
 	public function __construct() {
 		add_shortcode( 'shortcake_social_share', [ $this, 'add_block_shortcode' ] );
@@ -65,19 +64,16 @@ class Socialshare extends Base_Block {
 					'id'                  => [
 						'type' => 'integer',
 					],
+					'title'             => [
+						'type'    => 'string',
+						'default' => '',
+					],
 					'focus_image'         => [
 						'type'    => 'string',
 						'default' => '',
 					],
 					'opacity'             => [
 						'type'    => 'integer',
-						'default' => '',
-					],
-					'mailing_list_iframe' => [
-						'type' => 'boolean',
-					],
-					'iframe_url'          => [
-						'type'    => 'string',
 						'default' => '',
 					],
 					'load_iframe'         => [
@@ -102,11 +98,9 @@ class Socialshare extends Base_Block {
 		if ( ! is_numeric( $fields['opacity'] ) ) {
 			$fields['opacity'] = 30;
 		}
-
+		$title             			   = $fields['title'] ?? '';
 		$fields['load_iframe']         = $fields['load_iframe'] ?? 'false';
 		$fields['focus_image']         = $fields['focus_image'] ?? 'center center';
-		$fields['iframe_url']          = $fields['iframe_url'] ?? '';
-		$fields['mailing_list_iframe'] = $fields['mailing_list_iframe'] ?? '';
 		$fields['id']                  = $fields['id'] ?? '';
 
 		// Handle delete Happy point image case.
@@ -128,8 +122,10 @@ class Socialshare extends Base_Block {
 		$fields['opacity']             = $opacity;
 		$fields['default_image']       = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
 		$fields['background_alt']      = empty( $image_alt ) ? __( 'Background image', 'planet4-blocks' ) : $image_alt;
+		$fields['title']               = '' !== $fields['title'] ? $fields['title'] : 'You should have used me';
 
 		$data = [
+			'title'  => $title,
 			'fields' => $fields,
 		];
 

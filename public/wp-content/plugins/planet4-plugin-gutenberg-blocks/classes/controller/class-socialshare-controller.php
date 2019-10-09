@@ -11,7 +11,7 @@ namespace P4BKS\Controllers\Blocks;
 if ( ! class_exists( 'SocialShare_Controller' ) ) {
 
 	/**
-	 * Class HappyPoint_Controller
+	 * Class Socialshare_Controller
 	 *
 	 * @package P4BKS\Controllers\Blocks
 	 * @since 0.1.14
@@ -22,7 +22,7 @@ if ( ! class_exists( 'SocialShare_Controller' ) ) {
 		const BLOCK_NAME = 'social_share';
 
 		/**
-		 * Shortcode UI setup for the happypoint shortcode.
+		 * Shortcode UI setup for the socialshare shortcode.
 		 * It is called when the Shortcake action hook `register_shortcode_ui` is called.
 		 */
 		public function prepare_fields() {
@@ -87,13 +87,7 @@ if ( ! class_exists( 'SocialShare_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Use mailing list iframe', 'planet4-blocks-backend' ),
-					'attr'  => 'mailing_list_iframe',
-					'type'  => 'checkbox',
-				],
-				[
 					'label'       => __( 'Iframe url', 'planet4-blocks-backend' ),
-					'attr'        => 'iframe_url',
 					'type'        => 'url',
 					'encode'      => true,
 					'description' => __(
@@ -132,8 +126,6 @@ if ( ! class_exists( 'SocialShare_Controller' ) ) {
 				'background'          => '',
 				'opacity'             => 30,
 				'focus_image'         => $fields['focus_image'] ?? 'center center',
-				'mailing_list_iframe' => '',
-				'iframe_url'          => $fields['iframe_url'] ?? '',
 			];
 
 			$fields = shortcode_atts( $shortcode_atts_pairs, $fields, $shortcode_tag );

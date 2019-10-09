@@ -18,7 +18,7 @@ export class SocialshareBlock {
          * [shortcake_happy_point background="4968" focus_image="center center" opacity="60" mailing_list_iframe="true" iframe_url="https%3A%2F%2Fact.greenpeace.org%2Fpage%2F34215%2Fsubscribe%2F1" /]
          *
          * new block-gutenberg:
-         * <!-- wp:planet4-blocks/happypoint {"focus_image":"50% 50%","opacity":60,"mailing_list_iframe":true,"iframe_url":"https://act.greenpeace.org/page/34215/subscribe/1","id":4968} /-->
+         * <!-- wp:planet4-blocks/socialshare {"focus_image":"50% 50%","opacity":60,"mailing_list_iframe":true,"iframe_url":"https://act.greenpeace.org/page/34215/subscribe/1","id":4968} /-->
          */
         transforms: {
           from: [
@@ -27,6 +27,12 @@ export class SocialshareBlock {
               // Shortcode tag can also be an array of shortcode aliases
               tag: 'shortcake_socail_share',
               attributes: {
+                title: {
+                  type: 'string',
+                  shortcode: function (attributes) {
+                    return attributes.named.title;
+                  }
+                },
                 opacity: {
                   type: 'integer',
                   shortcode: ({named: {opacity = ''}}) => opacity,
@@ -39,19 +45,15 @@ export class SocialshareBlock {
                   type: 'string',
                   shortcode: ({named: {focus_image = ''}}) => focus_image,
                 },
-                mailing_list_iframe: {
-                  type: 'string',
-                  shortcode: ({named: {mailing_list_iframe = ''}}) => mailing_list_iframe,
-                },
-                iframe_url: {
-                  type: 'string',
-                  shortcode: ({named: {iframe_url = ''}}) => iframe_url,
-                },
               },
             },
           ]
         },
         attributes: {
+          title: {
+            type: 'string',
+            default: '',
+          },
           focus_image: {
             type: 'string',
           },
@@ -59,18 +61,8 @@ export class SocialshareBlock {
             type: 'number',
             default: 60
           },
-          mailing_list_iframe: {
-            type: 'boolean',
-          },
-          iframe_url: {
-            type: 'string',
-          },
           id: {
             type: 'number',
-          },
-          load_iframe: {
-            type: 'boolean',
-            default: false
           }
         },
         edit: withSelect( ( select, props ) => {
@@ -98,16 +90,16 @@ export class SocialshareBlock {
             setAttributes({background: value});
           }
 
+          function onTitleChange(value) {
+            setAttributes({title: value});
+          }
+
           function onOpacityChange( value ) {
             setAttributes({opacity: value});
           }
 
           function onMailingListIframeChange( value ) {
             setAttributes({mailing_list_iframe: value});
-          }
-
-          function onIframeUrlChange( value ) {
-            setAttributes({iframe_url: value});
           }
 
           function onFocalPointChange( {x,y} ) {
@@ -129,10 +121,9 @@ export class SocialshareBlock {
             {...attributes}
             isSelected={isSelected}
             url={img_url}
+            onTitleChange={onTitleChange}
             onSelectImage={onSelectImage}
             onOpacityChange={onOpacityChange}
-            onMailingListIframeChange={onMailingListIframeChange}
-            onIframeUrlChange={onIframeUrlChange}
             onFocalPointChange={onFocalPointChange}
             onRemoveImages={onRemoveImages}
           />

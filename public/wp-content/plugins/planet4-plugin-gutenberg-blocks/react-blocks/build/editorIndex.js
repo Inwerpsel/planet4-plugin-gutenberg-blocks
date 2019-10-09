@@ -5450,7 +5450,7 @@ var SocialshareBlock = function SocialshareBlock() {
      * [shortcake_happy_point background="4968" focus_image="center center" opacity="60" mailing_list_iframe="true" iframe_url="https%3A%2F%2Fact.greenpeace.org%2Fpage%2F34215%2Fsubscribe%2F1" /]
      *
      * new block-gutenberg:
-     * <!-- wp:planet4-blocks/happypoint {"focus_image":"50% 50%","opacity":60,"mailing_list_iframe":true,"iframe_url":"https://act.greenpeace.org/page/34215/subscribe/1","id":4968} /-->
+     * <!-- wp:planet4-blocks/socialshare {"focus_image":"50% 50%","opacity":60,"mailing_list_iframe":true,"iframe_url":"https://act.greenpeace.org/page/34215/subscribe/1","id":4968} /-->
      */
     transforms: {
       from: [{
@@ -5458,6 +5458,12 @@ var SocialshareBlock = function SocialshareBlock() {
         // Shortcode tag can also be an array of shortcode aliases
         tag: 'shortcake_socail_share',
         attributes: {
+          title: {
+            type: 'string',
+            shortcode: function shortcode(attributes) {
+              return attributes.named.title;
+            }
+          },
           opacity: {
             type: 'integer',
             shortcode: function shortcode(_ref) {
@@ -5481,27 +5487,15 @@ var SocialshareBlock = function SocialshareBlock() {
                   focus_image = _ref3$named$focus_ima === void 0 ? '' : _ref3$named$focus_ima;
               return focus_image;
             }
-          },
-          mailing_list_iframe: {
-            type: 'string',
-            shortcode: function shortcode(_ref4) {
-              var _ref4$named$mailing_l = _ref4.named.mailing_list_iframe,
-                  mailing_list_iframe = _ref4$named$mailing_l === void 0 ? '' : _ref4$named$mailing_l;
-              return mailing_list_iframe;
-            }
-          },
-          iframe_url: {
-            type: 'string',
-            shortcode: function shortcode(_ref5) {
-              var _ref5$named$iframe_ur = _ref5.named.iframe_url,
-                  iframe_url = _ref5$named$iframe_ur === void 0 ? '' : _ref5$named$iframe_ur;
-              return iframe_url;
-            }
           }
         }
       }]
     },
     attributes: {
+      title: {
+        type: 'string',
+        default: ''
+      },
       focus_image: {
         type: 'string'
       },
@@ -5509,18 +5503,8 @@ var SocialshareBlock = function SocialshareBlock() {
         type: 'number',
         default: 60
       },
-      mailing_list_iframe: {
-        type: 'boolean'
-      },
-      iframe_url: {
-        type: 'string'
-      },
       id: {
         type: 'number'
-      },
-      load_iframe: {
-        type: 'boolean',
-        default: false
       }
     },
     edit: withSelect(function (select, props) {
@@ -5539,15 +5523,21 @@ var SocialshareBlock = function SocialshareBlock() {
       return {
         img_url: img_url
       };
-    })(function (_ref6) {
-      var img_url = _ref6.img_url,
-          isSelected = _ref6.isSelected,
-          attributes = _ref6.attributes,
-          setAttributes = _ref6.setAttributes;
+    })(function (_ref4) {
+      var img_url = _ref4.img_url,
+          isSelected = _ref4.isSelected,
+          attributes = _ref4.attributes,
+          setAttributes = _ref4.setAttributes;
 
       function onBackgroundChange(value) {
         setAttributes({
           background: value
+        });
+      }
+
+      function onTitleChange(value) {
+        setAttributes({
+          title: value
         });
       }
 
@@ -5563,15 +5553,9 @@ var SocialshareBlock = function SocialshareBlock() {
         });
       }
 
-      function onIframeUrlChange(value) {
-        setAttributes({
-          iframe_url: value
-        });
-      }
-
-      function onFocalPointChange(_ref7) {
-        var x = _ref7.x,
-            y = _ref7.y;
+      function onFocalPointChange(_ref5) {
+        var x = _ref5.x,
+            y = _ref5.y;
         x = parseFloat(x).toFixed(2);
         y = parseFloat(y).toFixed(2);
         setAttributes({
@@ -5579,8 +5563,8 @@ var SocialshareBlock = function SocialshareBlock() {
         });
       }
 
-      function onSelectImage(_ref8) {
-        var id = _ref8.id;
+      function onSelectImage(_ref6) {
+        var id = _ref6.id;
         setAttributes({
           id: id
         });
@@ -5598,10 +5582,9 @@ var SocialshareBlock = function SocialshareBlock() {
       return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Socialshare__WEBPACK_IMPORTED_MODULE_3__["Socialshare"], _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({}, attributes, {
         isSelected: isSelected,
         url: img_url,
+        onTitleChange: onTitleChange,
         onSelectImage: onSelectImage,
         onOpacityChange: onOpacityChange,
-        onMailingListIframeChange: onMailingListIframeChange,
-        onIframeUrlChange: onIframeUrlChange,
         onFocalPointChange: onFocalPointChange,
         onRemoveImages: onRemoveImages
       }));
@@ -5678,8 +5661,6 @@ function (_Component) {
       var _this$props = this.props,
           focus_image = _this$props.focus_image,
           opacity = _this$props.opacity,
-          mailing_list_iframe = _this$props.mailing_list_iframe,
-          iframe_url = _this$props.iframe_url,
           url = _this$props.url,
           id = _this$props.id;
       var focal_point_params = {
@@ -5729,7 +5710,13 @@ function (_Component) {
         }
       };
 
-      return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["Fragment"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["InspectorControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["PanelBody"], {
+      return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["Fragment"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["TextControl"], {
+        label: __('Title', 'planet4-blocks-backend'),
+        placeholder: __('Enter title', 'planet4-blocks-backend'),
+        help: __('Optional', 'planet4-blocks-backend'),
+        value: this.props.title,
+        onChange: this.props.onTitleChange
+      })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["InspectorControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["PanelBody"], {
         title: __('Setting', 'p4ge')
       }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["RangeControl"], {
         label: __('Opacity', 'p4ge'),
@@ -5739,18 +5726,6 @@ function (_Component) {
         max: 100,
         initialPosition: opacity,
         help: __('We use an overlay to fade the image back. Use a number between 1 and 100, the higher the number, the more faded the image will look. If you leave this empty, the default of 30 will be used.', 'p4ge')
-      }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["ToggleControl"], {
-        label: __('Use mailing list iframe', 'p4ge'),
-        help: __('Use mailing list iframe', 'p4ge'),
-        value: mailing_list_iframe,
-        checked: this.props.mailing_list_iframe,
-        onChange: this.props.onMailingListIframeChange
-      }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["TextControl"], {
-        label: __('Iframe url', 'p4ge'),
-        placeholder: __('Enter Iframe url', 'p4ge'),
-        help: __('If a url is set in this field and the \'mailing list iframe\' option is enabled, it will override the planet4 engaging network setting.', 'p4ge'),
-        value: iframe_url,
-        onChange: this.props.onIframeUrlChange
       }))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["BlockControls"], null, this.props.id && 0 < this.props.id && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["Toolbar"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUploadCheck"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUpload"], {
         onSelect: this.props.onSelectImage,
         allowedTypes: ['image'],
@@ -5797,10 +5772,7 @@ function (_Component) {
         attributes: {
           id: this.props.id,
           focus_image: this.props.focus_image,
-          opacity: this.props.opacity,
-          mailing_list_iframe: this.props.mailing_list_iframe,
-          iframe_url: this.props.iframe_url,
-          load_iframe: true
+          opacity: this.props.opacity
         }
       })));
     }

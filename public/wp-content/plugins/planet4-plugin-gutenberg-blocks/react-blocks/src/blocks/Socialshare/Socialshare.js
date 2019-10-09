@@ -31,7 +31,7 @@ export class Socialshare extends Component {
 
       const dimensions = {width: 212, height: 212};
 
-      const {focus_image, opacity, mailing_list_iframe, iframe_url, url, id} = this.props;
+      const {focus_image, opacity, url, id} = this.props;
 
       let focal_point_params = {x:'',y:''};
 
@@ -75,6 +75,15 @@ export class Socialshare extends Component {
 
       return (
         <Fragment>
+          <div>
+          <TextControl
+            label={__('Title', 'planet4-blocks-backend')}
+            placeholder={__('Enter title', 'planet4-blocks-backend')}
+            help={__('Optional', 'planet4-blocks-backend')}
+            value={this.props.title}
+            onChange={this.props.onTitleChange}
+          />
+        </div>
           <InspectorControls>
             <PanelBody title={__('Setting', 'p4ge')}>
               <RangeControl
@@ -86,20 +95,7 @@ export class Socialshare extends Component {
                 initialPosition={opacity}
                 help={__('We use an overlay to fade the image back. Use a number between 1 and 100, the higher the number, the more faded the image will look. If you leave this empty, the default of 30 will be used.', 'p4ge')}
               />
-              <ToggleControl
-                label={__('Use mailing list iframe', 'p4ge')}
-                help={__('Use mailing list iframe', 'p4ge')}
-                value={mailing_list_iframe}
-                checked={this.props.mailing_list_iframe}
-                onChange={this.props.onMailingListIframeChange}
-              />
-              <TextControl
-                label={__('Iframe url', 'p4ge')}
-                placeholder={__('Enter Iframe url', 'p4ge')}
-                help={__('If a url is set in this field and the \'mailing list iframe\' option is enabled, it will override the planet4 engaging network setting.', 'p4ge')}
-                value={iframe_url}
-                onChange={this.props.onIframeUrlChange}
-              />
+              
             </PanelBody>
           </InspectorControls>
           <BlockControls>
@@ -175,9 +171,6 @@ export class Socialshare extends Component {
                     id: this.props.id,
                     focus_image: this.props.focus_image,
                     opacity: this.props.opacity,
-                    mailing_list_iframe: this.props.mailing_list_iframe,
-                    iframe_url: this.props.iframe_url,
-                    load_iframe: true,
                   }}>
                 </ServerSideRender>
               </Preview>

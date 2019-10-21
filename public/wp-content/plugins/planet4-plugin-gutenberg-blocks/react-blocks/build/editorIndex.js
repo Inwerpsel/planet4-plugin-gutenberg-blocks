@@ -5423,17 +5423,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SocialshareBlock", function() { return SocialshareBlock; });
 /* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/extends */ "./node_modules/@babel/runtime/helpers/extends.js");
 /* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Socialshare__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Socialshare */ "./react-blocks/src/blocks/Socialshare/Socialshare.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Socialshare__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Socialshare */ "./react-blocks/src/blocks/Socialshare/Socialshare.js");
+
 
 
 
 
 var SocialshareBlock = function SocialshareBlock() {
-  _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, SocialshareBlock);
+  _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, SocialshareBlock);
 
   var registerBlockType = wp.blocks.registerBlockType;
   var __ = wp.i18n.__;
@@ -5445,12 +5448,6 @@ var SocialshareBlock = function SocialshareBlock() {
 
     /**
      * Transforms old 'shortcake' shortcode to new gutenberg block.
-     *
-     * old block-shortcode:
-     * [shortcake_happy_point background="4968" focus_image="center center" opacity="60" mailing_list_iframe="true" iframe_url="https%3A%2F%2Fact.greenpeace.org%2Fpage%2F34215%2Fsubscribe%2F1" /]
-     *
-     * new block-gutenberg:
-     * <!-- wp:planet4-blocks/socialshare {"focus_image":"50% 50%","opacity":60,"mailing_list_iframe":true,"iframe_url":"https://act.greenpeace.org/page/34215/subscribe/1","id":4968} /-->
      */
     transforms: {
       from: [{
@@ -5464,28 +5461,50 @@ var SocialshareBlock = function SocialshareBlock() {
               return attributes.named.title;
             }
           },
-          opacity: {
-            type: 'integer',
-            shortcode: function shortcode(_ref) {
-              var _ref$named$opacity = _ref.named.opacity,
-                  opacity = _ref$named$opacity === void 0 ? '' : _ref$named$opacity;
-              return opacity;
+          subtitle: {
+            type: 'string',
+            shortcode: function shortcode(attributes) {
+              return attributes.named.subtitle;
             }
           },
           id: {
             type: 'integer',
-            shortcode: function shortcode(_ref2) {
-              var _ref2$named$id = _ref2.named.id,
-                  id = _ref2$named$id === void 0 ? '' : _ref2$named$id;
+            shortcode: function shortcode(_ref) {
+              var _ref$named$id = _ref.named.id,
+                  id = _ref$named$id === void 0 ? '' : _ref$named$id;
               return id;
             }
           },
-          focus_image: {
+          multiple_image: {
+            type: 'string',
+            shortcode: function shortcode(_ref2) {
+              var _ref2$named$multiple_ = _ref2.named.multiple_image,
+                  multiple_image = _ref2$named$multiple_ === void 0 ? '' : _ref2$named$multiple_;
+              return multiple_image;
+            }
+          },
+          gallery_block_focus_points: {
             type: 'string',
             shortcode: function shortcode(_ref3) {
-              var _ref3$named$focus_ima = _ref3.named.focus_image,
-                  focus_image = _ref3$named$focus_ima === void 0 ? '' : _ref3$named$focus_ima;
-              return focus_image;
+              var _ref3$named$gallery_b = _ref3.named.gallery_block_focus_points,
+                  gallery_block_focus_points = _ref3$named$gallery_b === void 0 ? '' : _ref3$named$gallery_b;
+              return gallery_block_focus_points;
+            }
+          },
+          messages: {
+            type: 'string',
+            shortcode: function shortcode(_ref4) {
+              var _ref4$named$messages = _ref4.named.messages,
+                  messages = _ref4$named$messages === void 0 ? '' : _ref4$named$messages;
+              return messages;
+            }
+          },
+          urls: {
+            type: 'string',
+            shortcode: function shortcode(_ref5) {
+              var _ref5$named$urls = _ref5.named.urls,
+                  urls = _ref5$named$urls === void 0 ? '' : _ref5$named$urls;
+              return urls;
             }
           }
         }
@@ -5496,42 +5515,112 @@ var SocialshareBlock = function SocialshareBlock() {
         type: 'string',
         default: ''
       },
-      focus_image: {
-        type: 'string'
-      },
-      opacity: {
-        type: 'number',
-        default: 60
+      subtitle: {
+        type: 'string',
+        default: ''
       },
       id: {
         type: 'number'
+      },
+      multiple_image: {
+        type: 'string'
+      },
+      image_data: {
+        type: 'object',
+        default: []
+      },
+      gallery_block_focus_points: {
+        type: 'string'
+      },
+      messages: {
+        type: 'string'
+      },
+      urls: {
+        type: 'string'
       }
     },
     edit: withSelect(function (select, props) {
       var attributes = props.attributes;
-      var id = attributes.id;
-      var img_url = '';
+      var multiple_image = attributes.multiple_image;
+      var image_urls_array = [];
 
-      if (id && 0 < id) {
-        img_url = select('core').getMedia(id);
+      if (multiple_image) {
+        var image_id_array = multiple_image.split(',');
+        $.each(image_id_array, function (index, img_id) {
+          var img_url = select('core').getMedia(img_id);
 
-        if (img_url) {
-          img_url = img_url.media_details.sizes.medium.source_url;
-        }
+          if (img_url) {
+            image_urls_array[img_id] = img_url.media_details.sizes.medium.source_url;
+          }
+        });
       }
 
       return {
-        img_url: img_url
+        image_urls_array: image_urls_array
       };
-    })(function (_ref4) {
-      var img_url = _ref4.img_url,
-          isSelected = _ref4.isSelected,
-          attributes = _ref4.attributes,
-          setAttributes = _ref4.setAttributes;
+    })(function (_ref6) {
+      var image_urls_array = _ref6.image_urls_array,
+          isSelected = _ref6.isSelected,
+          attributes = _ref6.attributes,
+          setAttributes = _ref6.setAttributes;
+      var image_data = attributes.image_data,
+          gallery_block_focus_points = attributes.gallery_block_focus_points,
+          messages = attributes.messages,
+          urls = attributes.urls; // Prepare image_data array on edit gallery block.
 
-      function onBackgroundChange(value) {
+      if (0 == image_data.length && 0 < image_urls_array.length) {
+        var new_image_data = [];
+        var focal_points_json = gallery_block_focus_points ? JSON.parse(gallery_block_focus_points) : {};
+        var messages_json = messages ? JSON.parse(messages) : {};
+        debugger;
+        var urlss_json = urls ? JSON.parse(urls) : {};
+
+        for (var img_id in image_urls_array) {
+          var x = void 0,
+              y = void 0;
+
+          if ($.isEmptyObject(focal_points_json)) {
+            x = 50;
+            y = 50;
+          } else {
+            var _focal_points_json$im = focal_points_json[img_id].replace(/\%/g, '').split(' ');
+
+            var _focal_points_json$im2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_focal_points_json$im, 2);
+
+            x = _focal_points_json$im2[0];
+            y = _focal_points_json$im2[1];
+          }
+
+          var mes = void 0;
+
+          if ($.isEmptyObject(messages_json)) {
+            mes = '';
+          } else {
+            mes = messages_json[img_id];
+          }
+
+          var url = void 0;
+
+          if ($.isEmptyObject(urlss_json)) {
+            url = '';
+          } else {
+            url = urlss_json[img_id];
+          }
+
+          new_image_data.push({
+            url: image_urls_array[img_id],
+            focalPoint: {
+              x: parseInt(x) / 100,
+              y: parseInt(y) / 100
+            },
+            id: img_id,
+            message: mes,
+            social_url: url
+          });
+        }
+
         setAttributes({
-          background: value
+          image_data: new_image_data
         });
       }
 
@@ -5541,50 +5630,148 @@ var SocialshareBlock = function SocialshareBlock() {
         });
       }
 
-      function onOpacityChange(value) {
+      function onSubTitleChange(value) {
         setAttributes({
-          opacity: value
+          subtitle: value
         });
       }
 
-      function onMailingListIframeChange(value) {
+      function onFocalPointChange(image_id, value) {
+        var updated_image_data = [];
+        var gallery_block_focus_points = {};
+        image_data.map(function (object) {
+          if (object.id === image_id) {
+            var _x = parseFloat(value.x).toFixed(2);
+
+            var _y = parseFloat(value.y).toFixed(2);
+
+            updated_image_data.push({
+              url: object.url,
+              social_url: object.social_url,
+              focalPoint: {
+                x: _x,
+                y: _y
+              },
+              id: image_id,
+              message: object.message
+            });
+            gallery_block_focus_points[image_id] = _x * 100 + '% ' + _y * 100 + '%';
+          } else {
+            updated_image_data.push(object);
+            var _img_id = object.id;
+            gallery_block_focus_points[_img_id] = parseInt(object.focalPoint.x * 100) + '% ' + parseInt(object.focalPoint.y * 100) + '%';
+          }
+        });
         setAttributes({
-          mailing_list_iframe: value
+          gallery_block_focus_points: JSON.stringify(gallery_block_focus_points)
+        });
+        setAttributes({
+          image_data: updated_image_data
         });
       }
 
-      function onFocalPointChange(_ref5) {
-        var x = _ref5.x,
-            y = _ref5.y;
-        x = parseFloat(x).toFixed(2);
-        y = parseFloat(y).toFixed(2);
+      function onMessageChange(image_id, value) {
+        var updated_image_data = [];
+        var messages = {};
+        image_data.map(function (object) {
+          if (object.id === image_id) {
+            updated_image_data.push({
+              url: object.url,
+              social_url: object.social_url,
+              focalPoint: object.focalPoint,
+              id: image_id,
+              message: value
+            });
+            messages[image_id] = value;
+          } else {
+            updated_image_data.push(object);
+            var _img_id2 = object.id;
+            messages[_img_id2] = object.message;
+          }
+        });
         setAttributes({
-          focus_image: x * 100 + '% ' + y * 100 + '%'
+          messages: JSON.stringify(messages)
+        });
+        setAttributes({
+          image_data: updated_image_data
         });
       }
 
-      function onSelectImage(_ref6) {
-        var id = _ref6.id;
+      function onURLChange(image_id, value) {
+        var updated_image_data = [];
+        var urls = {};
+        image_data.map(function (object) {
+          if (object.id === image_id) {
+            updated_image_data.push({
+              url: object.url,
+              focalPoint: object.focalPoint,
+              id: image_id,
+              message: object.message,
+              social_url: value
+            });
+            urls[image_id] = value;
+          } else {
+            updated_image_data.push(object);
+            var _img_id3 = object.id;
+            urls[_img_id3] = object.social_url;
+          }
+        });
         setAttributes({
-          id: id
+          urls: JSON.stringify(urls)
+        });
+        setAttributes({
+          image_data: updated_image_data
+        });
+      }
+
+      function onSelectImage(value) {
+        var image_ids = [];
+        var image_data = [];
+
+        for (var key in value) {
+          image_ids.push(value[key].id);
+          var _img_id4 = value[key].id;
+          var message = value[key].message;
+          var surl = value[key].social_url;
+          image_data.push({
+            url: value[key].url,
+            focalPoint: {
+              x: 0.5,
+              y: 0.5
+            },
+            id: _img_id4,
+            message: message,
+            social_url: surl
+          });
+        }
+
+        setAttributes({
+          multiple_image: image_ids.join(',')
+        });
+        setAttributes({
+          image_data: image_data
         });
       }
 
       function onRemoveImages() {
         setAttributes({
-          id: -1
+          multiple_image: ''
         });
         setAttributes({
-          focus_image: ''
+          gallery_block_focus_points: ''
+        });
+        setAttributes({
+          image_data: []
         });
       }
 
-      return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Socialshare__WEBPACK_IMPORTED_MODULE_3__["Socialshare"], _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({}, attributes, {
+      return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__["createElement"])(_Socialshare__WEBPACK_IMPORTED_MODULE_4__["Socialshare"], _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({}, attributes, {
         isSelected: isSelected,
-        url: img_url,
         onTitleChange: onTitleChange,
+        onSubTitleChange: onSubTitleChange,
         onSelectImage: onSelectImage,
-        onOpacityChange: onOpacityChange,
+        onMessageChange: onMessageChange,
+        onURLChange: onURLChange,
         onFocalPointChange: onFocalPointChange,
         onRemoveImages: onRemoveImages
       }));
@@ -5660,9 +5847,9 @@ function (_Component) {
       };
       var _this$props = this.props,
           focus_image = _this$props.focus_image,
-          opacity = _this$props.opacity,
-          url = _this$props.url,
-          id = _this$props.id;
+          id = _this$props.id,
+          multiple_image = _this$props.multiple_image,
+          image_data = _this$props.image_data;
       var focal_point_params = {
         x: '',
         y: ''
@@ -5688,79 +5875,96 @@ function (_Component) {
       }
 
       var getImageOrButton = function getImageOrButton(openEvent) {
-        if (_this.props.id && 0 < _this.props.id) {
-          return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", {
-            align: "center"
-          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("img", {
-            src: _this.props.url,
-            onClick: openEvent,
-            className: "happypoint__imgs",
-            width: '400px',
-            style: {
-              padding: '10px 10px'
-            }
-          }));
+        if (0 < _this.props.image_data.length) {
+          return _this.props.image_data.map(function (item, index) {
+            return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("span", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("img", {
+              src: item.url,
+              onClick: openEvent,
+              className: "gallery__imgs",
+              key: index,
+              width: "150 px",
+              style: {
+                padding: '10px 10px'
+              }
+            }));
+          });
         } else {
           return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", {
             className: "button-container"
           }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["Button"], {
             onClick: openEvent,
             className: "button"
-          }, "+ ", __('Select Background Image', 'p4ge')));
+          }, "+ ", __('Select Gallery Images', 'p4ge')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, __('Select images in the order you want them to appear.', 'p4ge')));
         }
       };
 
+      var multiple_image_array = multiple_image ? multiple_image.split(',') : [];
       return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["Fragment"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["TextControl"], {
         label: __('Title', 'planet4-blocks-backend'),
         placeholder: __('Enter title', 'planet4-blocks-backend'),
         help: __('Optional', 'planet4-blocks-backend'),
         value: this.props.title,
         onChange: this.props.onTitleChange
-      })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["InspectorControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["PanelBody"], {
-        title: __('Setting', 'p4ge')
-      }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["RangeControl"], {
-        label: __('Opacity', 'p4ge'),
-        value: opacity,
-        onChange: this.props.onOpacityChange,
-        min: 1,
-        max: 100,
-        initialPosition: opacity,
-        help: __('We use an overlay to fade the image back. Use a number between 1 and 100, the higher the number, the more faded the image will look. If you leave this empty, the default of 30 will be used.', 'p4ge')
-      }))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["BlockControls"], null, this.props.id && 0 < this.props.id && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["Toolbar"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUploadCheck"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUpload"], {
-        onSelect: this.props.onSelectImage,
-        allowedTypes: ['image'],
-        value: id,
+      }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["TextControl"], {
+        label: __('Subtitle', 'planet4-blocks-backend'),
+        placeholder: __('Enter subtitle', 'planet4-blocks-backend'),
+        help: __('Optional', 'planet4-blocks-backend'),
+        value: this.props.subtitle,
+        onChange: this.props.onSubTitleChange
+      })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["BlockControls"], null, this.props.id && 0 < this.props.id && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["Toolbar"], null, __('Select Gallery Images', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUploadCheck"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUpload"], {
+        title: __('Select Gallery Images', 'p4ge'),
         type: "image",
+        onSelect: this.props.onSelectImage,
+        value: multiple_image_array,
+        allowedTypes: ["image"],
+        multiple: "true",
         render: function render(_ref) {
           var open = _ref.open;
-          return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["IconButton"], {
-            className: "components-icon-button components-toolbar__control",
-            label: __('Edit Image', 'p4ge'),
-            onClick: open,
-            icon: "edit"
-          });
+          return getImageOrButton(open);
         }
-      })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["IconButton"], {
+      }))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["IconButton"], {
         className: "components-icon-button components-toolbar__control",
         label: __('Remove Image', 'p4ge'),
         onClick: this.props.onRemoveImages,
         icon: "trash"
-      }))), __('Select Background Image', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUploadCheck"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUpload"], {
-        title: __('Select Background Image', 'p4ge'),
+      }))), __('Select Gallery Images', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUploadCheck"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["MediaUpload"], {
+        title: __('Select Gallery Images', 'p4ge'),
         type: "image",
         onSelect: this.props.onSelectImage,
-        value: id,
-        allowedTypes: ['image'],
+        value: multiple_image_array,
+        allowedTypes: ["image"],
+        multiple: "true",
         render: function render(_ref2) {
           var open = _ref2.open;
           return getImageOrButton(open);
         }
-      }))), id && 0 < id && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", null, __('Select focus point for background image', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["FocalPointPicker"], {
-        url: url,
-        dimensions: dimensions,
-        value: focal_point_params,
-        onChange: this.props.onFocalPointChange
-      })));
+      }))), image_data && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("div", {
+        className: "wp-block-master-theme-gallery__FocalPointPicker"
+      }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("ul", null, image_data.map(function (item, index) {
+        return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("li", {
+          key: index
+        }, __('Select gallery image focal point', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["FocalPointPicker"], {
+          url: item.url,
+          dimensions: dimensions,
+          value: item.focalPoint,
+          onChange: _this.props.onFocalPointChange.bind(_this, item.id),
+          key: item.id
+        }), __('Enter message for social media', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["TextControl"], {
+          label: __('Social message', 'planet4-blocks-backend'),
+          placeholder: __('Enter message', 'planet4-blocks-backend'),
+          help: __('Optional', 'planet4-blocks-backend'),
+          value: item.message,
+          onChange: _this.props.onMessageChange.bind(_this, item.id),
+          key: item.id + 't1'
+        }), __('Enter URL to share', 'p4ge'), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["TextControl"], {
+          label: __('Social URL', 'planet4-blocks-backend'),
+          placeholder: __('Enter URL to share', 'planet4-blocks-backend'),
+          help: __('Optional', 'planet4-blocks-backend'),
+          value: item.social_url,
+          onChange: _this.props.onURLChange.bind(_this, item.id),
+          key: item.id + 't2'
+        }));
+      }))));
     }
   }, {
     key: "render",
@@ -5770,9 +5974,8 @@ function (_Component) {
       }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["ServerSideRender"], {
         block: 'planet4-blocks/socialshare',
         attributes: {
-          id: this.props.id,
-          focus_image: this.props.focus_image,
-          opacity: this.props.opacity
+          multiple_image: this.props.multiple_image,
+          gallery_block_focus_points: this.props.gallery_block_focus_points
         }
       })));
     }

@@ -1,6 +1,7 @@
 import {Component,Fragment} from '@wordpress/element';
 import {Preview} from '../../components/Preview';
 
+
 import {
   MediaPlaceholder,
   InspectorControls,
@@ -31,7 +32,7 @@ export class Socialshare extends Component {
 
       const dimensions = {width: 212, height: 212};
 
-      const {focus_image, opacity, url, id} = this.props;
+      const {focus_image, id, multiple_image, image_data} = this.props;
 
       let focal_point_params = {x:'',y:''};
 
@@ -44,35 +45,45 @@ export class Socialshare extends Component {
       }
 
       const getImageOrButton = (openEvent) => {
-        if ( this.props.id && ( 0 < this.props.id ) ) {
+        if ( 0 < this.props.image_data.length ) {
 
           return (
 
-            <div align='center'>
-              <img
-                src={ this.props.url }
-                onClick={ openEvent }
-                className='happypoint__imgs'
-                width={'400px'}
-                style={{padding: '10px 10px'}}
-              />
-            </div>
+            this.props.image_data.map((item, index) => {
+              return (
+                <span>
+                  <img
+                    src={ item.url }
+                    onClick={ openEvent }
+                    className="gallery__imgs"
+                    key={index}
+                    width='150 px'
+                    style={{padding: '10px 10px'}}
+                  />
+                </span>
+              );
+            })
 
           );
         }
         else {
           return (
-            <div className='button-container'>
+            <div className="button-container">
               <Button
                 onClick={ openEvent }
-                className='button'>
-                + {__('Select Background Image', 'p4ge')}
+                className="button">
+                + {__('Select Gallery Images', 'p4ge')}
               </Button>
+
+              <div>{__('Select images in the order you want them to appear.', 'p4ge')}</div>
             </div>
           );
         }
       };
 
+    
+
+      let multiple_image_array = multiple_image ? multiple_image.split(',') : [];
       return (
         <Fragment>
           <div>
@@ -83,42 +94,32 @@ export class Socialshare extends Component {
             value={this.props.title}
             onChange={this.props.onTitleChange}
           />
+            <TextControl
+            label={__('Subtitle', 'planet4-blocks-backend')}
+            placeholder={__('Enter subtitle', 'planet4-blocks-backend')}
+            help={__('Optional', 'planet4-blocks-backend')}
+            value={this.props.subtitle}
+            onChange={this.props.onSubTitleChange}
+          />
         </div>
-          <InspectorControls>
-            <PanelBody title={__('Setting', 'p4ge')}>
-              <RangeControl
-                label={__('Opacity', 'p4ge')}
-                value={opacity}
-                onChange={this.props.onOpacityChange}
-                min={1}
-                max={100}
-                initialPosition={opacity}
-                help={__('We use an overlay to fade the image back. Use a number between 1 and 100, the higher the number, the more faded the image will look. If you leave this empty, the default of 30 will be used.', 'p4ge')}
-              />
-              
-            </PanelBody>
-          </InspectorControls>
           <BlockControls>
             { this.props.id && ( 0 < this.props.id ) && (
               <Toolbar>
-                <MediaUploadCheck>
-                  <MediaUpload
-                    onSelect={this.props.onSelectImage}
-                    allowedTypes={['image']}
-                    value={id}
-                    type='image'
-                    render={({ open }) => {
-                      return (
-                        <IconButton
-                          className='components-icon-button components-toolbar__control'
-                          label={__('Edit Image', 'p4ge')}
-                          onClick={open}
-                          icon='edit'
-                        />
-                      );
-                    }}
-                  />
-                </MediaUploadCheck>
+
+                   {__('Select Gallery Images', 'p4ge')}
+            <div>
+              <MediaUploadCheck>
+                <MediaUpload
+                  title={__('Select Gallery Images', 'p4ge')}
+                  type="image"
+                  onSelect={this.props.onSelectImage}
+                  value={multiple_image_array}
+                  allowedTypes={["image"]}
+                  multiple="true"
+                  render={ ({ open }) => getImageOrButton(open) }
+                />
+              </MediaUploadCheck>
+            </div>
                 <IconButton
                   className='components-icon-button components-toolbar__control'
                   label={__('Remove Image', 'p4ge')}
@@ -128,30 +129,67 @@ export class Socialshare extends Component {
               </Toolbar>
             )}
           </BlockControls>
-          {__('Select Background Image', 'p4ge')}
-          <div>
-            <MediaUploadCheck>
-              <MediaUpload
-                title={__('Select Background Image', 'p4ge')}
-                type='image'
-                onSelect={this.props.onSelectImage}
-                value={id}
-                allowedTypes={['image']}
-                render={ ({ open }) => getImageOrButton(open) }
-              />
-            </MediaUploadCheck>
-          </div>
-          {id && 0 < id &&
+          {__('Select Gallery Images', 'p4ge')}
             <div>
-              {__('Select focus point for background image', 'p4ge')}
-              <FocalPointPicker
-                url={url}
-                dimensions={dimensions}
-                value={focal_point_params}
-                onChange={this.props.onFocalPointChange}
-              />
+              <MediaUploadCheck>
+                <MediaUpload
+                  title={__('Select Gallery Images', 'p4ge')}
+                  type="image"
+                  onSelect={this.props.onSelectImage}
+                  value={multiple_image_array}
+                  allowedTypes={["image"]}
+                  multiple="true"
+                  render={ ({ open }) => getImageOrButton(open) }
+                />
+              </MediaUploadCheck>
             </div>
-          }
+
+            {image_data &&
+            <div
+              className={
+                "wp-block-master-theme-gallery__FocalPointPicker"
+              }
+            >
+              <ul>
+                {image_data.map((item, index) => {
+                  return (
+                    <li
+                      key={index}
+                    >
+                      {__('Select gallery image focal point', 'p4ge')}
+                      <FocalPointPicker
+                        url={item.url}
+                        dimensions={dimensions}
+                        value={item.focalPoint}
+                        onChange={this.props.onFocalPointChange.bind(this,item.id)}
+                        key={item.id}
+                      />
+                        {__('Enter message for social media', 'p4ge')}
+                        <TextControl
+                                    label={__('Social message', 'planet4-blocks-backend')}
+                                    placeholder={__('Enter message', 'planet4-blocks-backend')}
+                                    help={__('Optional', 'planet4-blocks-backend')}
+                                    value={item.message}
+                                    onChange={this.props.onMessageChange.bind(this, item.id)}
+                                    key={item.id + 't1'}
+                                   
+                        />
+
+                          {__('Enter URL to share', 'p4ge')}
+                        <TextControl
+                                    label={__('Social URL', 'planet4-blocks-backend')}
+                                    placeholder={__('Enter URL to share', 'planet4-blocks-backend')}
+                                    help={__('Optional', 'planet4-blocks-backend')}
+                                    value={item.social_url}
+                                    onChange={this.props.onURLChange.bind(this, item.id)} 
+                                    key={item.id + 't2'}        
+                        />
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            }
         </Fragment>
       );
     }
@@ -168,9 +206,8 @@ export class Socialshare extends Component {
                 <ServerSideRender
                   block={'planet4-blocks/socialshare'}
                   attributes={{
-                    id: this.props.id,
-                    focus_image: this.props.focus_image,
-                    opacity: this.props.opacity,
+                    multiple_image: this.props.multiple_image,
+                    gallery_block_focus_points: this.props.gallery_block_focus_points,
                   }}>
                 </ServerSideRender>
               </Preview>

@@ -4,11 +4,14 @@
 @import "styleguide/src/base/functions";
 @import "styleguide/src/base/mixins";
 
+@import "styleguide/src/base/fonts";
+
 @import "blocks/ArticlesEditor";
 @import "blocks/CarouselHeaderEditor";
 @import "blocks/CarouselHeaderEditorOverrides";
 @import "blocks/SplitTwoColumnsEditor";
 @import "blocks/SubmenuEditor";
+@import "blocks/Socialshare.scss";
 @import "components/LayoutSelector";
 @import "components/EmptyMessage";
 @import "components/Preview";

@@ -37,10 +37,13 @@ class Socialshare extends Base_Block {
 
 		$attributes = shortcode_atts(
 			[
-				'title'               => '',
-				'id'                  => '',
-				'focus_image'         => '',
-				'opacity'             => '',
+				'title'                      => '',
+				'subtitle'                   => '',
+				'id'                         => '',
+				'gallery_block_focus_points' => '',
+				'urls'                       => '',
+				'multiple_image'             => '',
+				'messages'                   => '',
 			],
 			$attributes,
 			'shortcake_social_share'
@@ -61,24 +64,29 @@ class Socialshare extends Base_Block {
 				'editor_script'   => 'planet4-blocks',
 				'render_callback' => [ $this, 'render' ],
 				'attributes'      => [
-					'id'                  => [
+					'id'                         => [
 						'type' => 'integer',
 					],
-					'title'             => [
+					'title'                      => [
 						'type'    => 'string',
 						'default' => '',
 					],
-					'focus_image'         => [
+
+					'subtitle'                   => [
 						'type'    => 'string',
 						'default' => '',
 					],
-					'opacity'             => [
-						'type'    => 'integer',
-						'default' => '',
+					'gallery_block_focus_points' => [
+						'type' => 'string',
 					],
-					'load_iframe'         => [
-						'type'    => 'boolean',
-						'default' => 'false',
+					'urls'                       => [
+						'type' => 'string',
+					],
+					'messages'                   => [
+						'type' => 'string',
+					],
+					'multiple_image'             => [
+						'type' => 'string',
 					],
 				],
 			]
@@ -95,38 +103,72 @@ class Socialshare extends Base_Block {
 	 */
 	public function prepare_data( $fields ): array {
 
-		if ( ! is_numeric( $fields['opacity'] ) ) {
-			$fields['opacity'] = 30;
-		}
-		$title             			   = $fields['title'] ?? '';
-		$fields['load_iframe']         = $fields['load_iframe'] ?? 'false';
-		$fields['focus_image']         = $fields['focus_image'] ?? 'center center';
-		$fields['id']                  = $fields['id'] ?? '';
+		$images = [];
 
-		// Handle delete Happy point image case.
-		if ( -1 === $fields['id'] ) {
-			$fields['id'] = '';
+		if ( isset( $fields['multiple_image'] ) ) {
+			$exploded_images = explode( ',', $fields['multiple_image'] );
+		} else {
+			$exploded_images = [];
 		}
 
-		$opacity = number_format( ( $fields['opacity'] / 100 ), 1 );
+		if ( isset( $fields['gallery_block_focus_points'] ) ) {
+			$img_focus_points = json_decode( str_replace( "'", '"', $fields['gallery_block_focus_points'] ), true );
+		} else {
+			$img_focus_points = [];
+		}
 
-		$options                       = get_option( 'planet4_options' );
-		$p4_happy_point_bg_image       = $options['happy_point_bg_image_id'] ?? '';
-		$image_id                      = '' !== $fields['id'] ? $fields['id'] : $p4_happy_point_bg_image;
-		$img_meta                      = wp_get_attachment_metadata( $image_id );
-		$image_alt                     = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
-		$fields['background_src']      = wp_get_attachment_image_src( $image_id, 'retina-large' );
-		$fields['background_srcset']   = wp_get_attachment_image_srcset( $image_id, 'retina-large', $img_meta );
-		$fields['background_sizes']    = wp_calculate_image_sizes( 'retina-large', null, null, $image_id );
-		$fields['engaging_network_id'] = $options['engaging_network_form_id'] ?? '';
-		$fields['opacity']             = $opacity;
-		$fields['default_image']       = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
-		$fields['background_alt']      = empty( $image_alt ) ? __( 'Background image', 'planet4-blocks' ) : $image_alt;
-		$fields['title']               = '' !== $fields['title'] ? $fields['title'] : 'You should have used me';
+		if ( isset( $fields['messages'] ) ) {
+			$messages = json_decode( str_replace( "'", '"', $fields['messages'] ), true );
+		} else {
+			$messages = [];
+		}
 
-		$data = [
-			'title'  => $title,
+		if ( isset( $fields['urls'] ) ) {
+			$urls = json_decode( str_replace( "'", '"', $fields['urls'] ), true );
+		} else {
+			$urls = [];
+		}
+
+		$images_dimensions = [];
+
+		$fields['id'] = $fields['id'] ?? '';
+
+		$count = 0;
+		foreach ( $exploded_images as $image_id ) {
+			$image_size = 'retina-large';
+			$image_data = [];
+
+			$image_data_array           = wp_get_attachment_image_src( $image_id, $image_size );
+			$image_data['image_src']    = $image_data_array ? $image_data_array[0] : '';
+			$image_data['image_srcset'] = wp_get_attachment_image_srcset( $image_id, $image_size, wp_get_attachment_metadata( $image_id ) );
+			$image_data['image_sizes']  = wp_calculate_image_sizes( $image_size, null, null, $image_id );
+			$image_data['alt_text']     = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
+			$image_data['caption']      = wp_get_attachment_caption( $image_id );
+			$image_data['focus_image']  = $img_focus_points[ $image_id ] ?? '';
+			$image_data['message']      = $fields['image_data'][ $count ]['message'] ?? '';
+			$image_data['social_url']   = $fields['image_data'][ $count ]['social_url'] ?? '';
+			$attachment_fields          = get_post_custom( $image_id );
+			$image_data['credits']      = '';
+			if ( isset( $attachment_fields['_credit_text'][0] ) && ! empty( $attachment_fields['_credit_text'][0] ) ) {
+				$image_data['credits'] = $attachment_fields['_credit_text'][0];
+				if ( ! is_numeric( strpos( $attachment_fields['_credit_text'][0], '©' ) ) ) {
+					$image_data['credits'] = '© ' . $image_data['credits'];
+				}
+			}
+
+			if ( count( (array) $image_data_array ) >= 3 ) {
+				$images_dimensions[] = $image_data_array[1];
+				$images_dimensions[] = $image_data_array[2];
+			}
+
+			$images[] = $image_data;
+			$count++;
+		}
+		$fields['title']    = '' !== $fields['title'] ? $fields['title'] : '';
+		$fields['subtitle'] = '' !== $fields['subtitle'] ? $fields['subtitle'] : '';
+		$data               = [
 			'fields' => $fields,
+			'images' => $images,
 		];
 
 		return $data;
@@ -137,8 +179,8 @@ class Socialshare extends Base_Block {
 	 */
 	public function enqueue_public_assets() {
 		wp_register_script(
-			'p4gbks-blocks-wide',
-			plugins_url( P4GBKS_PLUGIN_DIRNAME ) . '/public/js/blocks_wide.js',
+			'social_share',
+			plugins_url( P4GBKS_PLUGIN_DIRNAME ) . '/public/js/slick.js',
 			[
 				'jquery',
 				'main',
@@ -146,6 +188,6 @@ class Socialshare extends Base_Block {
 			'1.0',
 			true
 		);
-		wp_enqueue_script( 'p4gbks-blocks-wide' );
+		wp_enqueue_script( 'social_share' );
 	}
 }

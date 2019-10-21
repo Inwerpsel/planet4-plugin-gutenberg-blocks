@@ -226,6 +226,7 @@ const FullWidthClassicCarouselHeader = {
    * @returns {jQuery} A jQuery selection of the next slide.
    */
   nextSlide: function (el) {
+    alert("next");
     const $el = $(el);
     const $nextSlide = $el.next('.carousel-item');
     // prevAll returns items in reverse DOM order: the first slide is the last element.

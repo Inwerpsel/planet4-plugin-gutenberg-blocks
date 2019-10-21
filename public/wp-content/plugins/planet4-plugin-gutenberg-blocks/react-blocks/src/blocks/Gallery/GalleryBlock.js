@@ -113,7 +113,6 @@ export class GalleryBlock {
           if (0 == image_data.length && 0 < image_urls_array.length) {
             let new_image_data = [];
             let focal_points_json = gallery_block_focus_points ? JSON.parse(gallery_block_focus_points):{};
-
             for (const img_id in image_urls_array) {
 
               let x,y;

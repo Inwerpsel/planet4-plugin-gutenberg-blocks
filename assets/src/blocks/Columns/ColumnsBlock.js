@@ -1,4 +1,5 @@
 import {Columns} from './Columns.js';
+import {withSelect} from '@wordpress/data';
 
 const {__} = wp.i18n;
 
@@ -52,7 +53,7 @@ export class ColumnsBlock {
                         title: attributes.named.title_1,
                         description: attributes.named.description_1 || ''
                       };
-                      if (attributes.named.columns_block_style != 'no_image') {
+                      if (attributes.named.columns_block_style !== 'no_image') {
                         column.attachment = attributes.named.attachment_1 || false;
                       }
                       column.cta_link = attributes.named.link_1 || '';
@@ -65,7 +66,7 @@ export class ColumnsBlock {
                           title: attributes.named.title_2,
                           description: attributes.named.description_2 || ''
                         };
-                        if (attributes.named.columns_block_style != 'no_image') {
+                        if (attributes.named.columns_block_style !== 'no_image') {
                           column.attachment = attributes.named.attachment_2 || false;
                         }
                         column.cta_link = attributes.named.link_2 || '';
@@ -79,7 +80,7 @@ export class ColumnsBlock {
                             title: attributes.named.title_3,
                             description: attributes.named.description_3 || ''
                           };
-                          if (attributes.named.columns_block_style != 'no_image') {
+                          if (attributes.named.columns_block_style !== 'no_image') {
                             column.attachment = attributes.named.attachment_3 || false;
                           }
                           column.cta_link = attributes.named.link_3 || '';
@@ -92,7 +93,7 @@ export class ColumnsBlock {
                               title: attributes.named.title_4,
                               description: attributes.named.description_4 || ''
                             };
-                            if (attributes.named.columns_block_style != 'no_image') {
+                            if (attributes.named.columns_block_style !== 'no_image') {
                               column.attachment = attributes.named.attachment_4 || false;
                             }
                             column.cta_link = attributes.named.link_4 || '';
@@ -136,14 +137,35 @@ export class ColumnsBlock {
               type: 'string'
             },
             link_new_tab:{
-              type: 'string'
+              type: 'boolean'
             },
             cta_text:{
               type: 'string'
             },
           }
         },
-        edit: ({isSelected, attributes, setAttributes}) => {
+        edit: withSelect( ( select, props ) => {
+
+          const { attributes } = props;
+          const { columns } = attributes;
+          let column_img = [];
+
+          if ( columns && 0 < columns.length ) {
+
+            for ( let column of columns ) {
+              if ( column['attachment'] && ( 0 < column['attachment'] ) ) {
+
+                let media_details = select('core').getMedia( column['attachment'] );
+                if (media_details) {
+                  column_img[column['attachment']] = select('core').getMedia( column['attachment'] ).source_url;
+                }
+              }
+            }
+          }
+
+          return { column_img };
+
+        } )( ( { isSelected, attributes, setAttributes, column_img} ) => {
 
           function onTitleChange(value) {
             setAttributes({columns_title: value});
@@ -154,29 +176,16 @@ export class ColumnsBlock {
           }
 
           function onSelectImage(index, value) {
-            const {columns} = attributes;
             let {id}          = value;
-            let new_columns   = [...columns];
-            new_columns[index]['attachment'] = id;
-            setAttributes({columns: new_columns});
-          }
-
-          function onSelectURL(index, value) {
-            const {columns} = attributes;
-            let {id} = null;
-            let new_columns = [...columns];
-            new_columns[index]['attachment'] = id;
-            setAttributes({columns: new_columns});
-          }
-
-          function onUploadError({message}) {
-            console.log(message);
+            let columns = JSON.parse(JSON.stringify(attributes.columns));
+            columns[index].attachment = id;
+            setAttributes({columns});
           }
 
           function onSelectedLayoutChange( value ) {
             setAttributes({columns_block_style: value});
 
-            if ( 'no_image' == value ) {
+            if ( 'no_image' === value ) {
               const {columns} = attributes;
               if ( 0 < columns.length ) {
                 let new_columns = [...columns];
@@ -240,6 +249,12 @@ export class ColumnsBlock {
             setAttributes({columns});
           }
 
+          function onDeleteImage(index) {
+            let columns = JSON.parse(JSON.stringify(attributes.columns));
+            columns[index].attachment = 0;
+            setAttributes({columns});
+          }
+
           return <Columns
             {...attributes}
             isSelected={isSelected}
@@ -247,17 +262,17 @@ export class ColumnsBlock {
             onTitleChange={onTitleChange}
             onDescriptionChange={onDescriptionChange}
             onSelectImage={onSelectImage}
-            onSelectURL={onSelectURL}
             addColumn={addColumn}
             removeColumn={removeColumn}
-            onUploadError={onUploadError}
             onColumnHeaderChange={onColumnHeaderChange}
             onColumnDescriptionChange={onColumnDescriptionChange}
             onCTALinkChange={onCTALinkChange}
             onLinkNewTabChange={onLinkNewTabChange}
             onCTAButtonTextChange={onCTAButtonTextChange}
+            column_img={column_img}
+            onDeleteImage={onDeleteImage}
           />
-        },
+        } ),
         save() {
           return null;
         }

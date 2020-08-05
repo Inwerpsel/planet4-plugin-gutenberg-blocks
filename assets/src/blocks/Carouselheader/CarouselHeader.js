@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import {Component, Fragment} from '@wordpress/element';
 import {
   Button,
   CheckboxControl,
@@ -7,24 +7,30 @@ import {
 import {LayoutSelector} from '../../components/LayoutSelector/LayoutSelector';
 import {Preview} from '../../components/Preview';
 import {CarouselHeaderSlide} from "./CarouselHeaderSlide";
-
+import {initializeCarouselHeader} from "./CarouselHeaderFront";
 
 export class CarouselHeader extends Component {
   constructor(props) {
     super(props);
-    this.refs = [];
-    this.ssrRef = React.createRef();
+    this.references = [];
     this.firstRender = true;
+  }
+
+  setDOMListener() {
+    const carouselInterval = window.setInterval(
+      () => {
+        if (document.getElementById('carousel-wrapper-header')) {
+          window.clearInterval(carouselInterval);
+          initializeCarouselHeader();
+        }
+      },
+      500
+    );
   }
 
   componentDidMount() {
     this.collapseSlides();
-    // Get ServerSideRender component fetch request and attach resolve function.
-    this.ssrRef.current.currentFetchRequest.then(function () {
-      setTimeout(function () {
-        initializeCarouselHeader();
-      }, 1000);
-    });
+    this.setDOMListener();
   }
 
   componentDidUpdate() {
@@ -32,23 +38,21 @@ export class CarouselHeader extends Component {
       this.collapseSlides();
       this.firstRender = false;
     }
+    this.setDOMListener();
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    this.ssrRef.current.currentFetchRequest.then(function() {
-      setTimeout(function () {
-      initializeCarouselHeader();
-      }, 1000);
-    });
+    this.setDOMListener();
+
+    return null;
   }
 
   /**
    * Collapse all active slides.
    */
   collapseSlides() {
-    let refs = this.refs;
-    Object.keys(this.refs).forEach(function (index) {
-      console.log(refs[index]); // key
+    let refs = this.references;
+    Object.keys(this.references).forEach(function (index) {
       if (null !== refs[index]) {
         refs[index].collapseSlide();
       }
@@ -76,26 +80,15 @@ export class CarouselHeader extends Component {
     return (
 
       <div>
-        <h3>{__('What style of carousel do you need?', 'p4ge')}</h3>
+        <h3>{__('Configure your carousel', 'p4ge')}</h3>
 
         <div>
-          <LayoutSelector
-            selectedOption={this.props.block_style}
-            onSelectedLayoutChange={this.props.onBlockStyleChange}
-            options={[
-              {
-                label: __('Zoom and slide to gray', 'p4ge'),
-                image: window.p4ge_vars.home + 'images/carousel-with-preview.png',
-                value: 'zoom-and-slide-to-gray',
-                help: __('This carousel provides a fancy transition, and a preview for the next slide in an oblique shape.')
-              }, {
-                label: __('Full width classic', 'p4ge'),
-                image: window.p4ge_vars.home + 'images/carousel-classic.png',
-                value: 'full-width-classic',
-                help: __('This is a full width slider with a classic look: big slides, fade transition, and no subheaders.'),
-              },
-            ]}
-          />
+          <div className='LayoutSelector'>
+          <label>
+            <img src={`${window.p4ge_vars.home}images/carousel-classic.png`}/>
+            <p className="help">{__('This is a full width slider with a classic look: big slides and fade transition.')}</p>
+          </label>
+          </div>
         </div>
 
         <div>
@@ -103,49 +96,42 @@ export class CarouselHeader extends Component {
             label={__('Carousel Autoplay', 'p4ge')}
             help={__('Select to trigger images autoslide', 'p4ge')}
             value={this.props.carousel_autoplay}
-            checked={this.props.carousel_autoplay}
+            checked={this.props.carousel_autoplay === true}
             onChange={(e) => this.props.onCarouselAutoplayChange(e)}
           />
         </div>
 
         {this.props.slides.map((slide, i) => {
           return (
-            <Fragment>
-
-              <hr className="slide-hr"/>
-
-                <CarouselHeaderSlide
-                  {...slide}
-                  onImageChange={this.props.onImageChange}
-                  onHeaderChange={this.props.onHeaderChange}
-                  onHeaderSizeChange={this.props.onHeaderSizeChange}
-                  onSubheaderChange={this.props.onSubheaderChange}
-                  onDescriptionChange={this.props.onDescriptionChange}
-                  onLinkTextChange={this.props.onLinkTextChange}
-                  onLinkUrlChange={this.props.onLinkUrlChange}
-                  onLinkNewTabChange={this.props.onLinkNewTabChange}
-                  onStyleChange={this.props.onStyleChange}
-                  onFocalPointsChange={this.props.onFocalPointsChange}
-                  hasSubheader={this.props.block_style !== 'full-width-classic'}
-                  index={i}
-                  key={i}
-                  ref={(instance) => {
-                    this.refs[i] = instance
-                  }}
-                />
+            <Fragment key={i}>
+              <CarouselHeaderSlide
+                {...slide}
+                onImageChange={this.props.onImageChange}
+                onHeaderChange={this.props.onHeaderChange}
+                onHeaderSizeChange={this.props.onHeaderSizeChange}
+                onDescriptionChange={this.props.onDescriptionChange}
+                onLinkTextChange={this.props.onLinkTextChange}
+                onLinkUrlChange={this.props.onLinkUrlChange}
+                onLinkNewTabChange={this.props.onLinkNewTabChange}
+                onFocalPointsChange={this.props.onFocalPointsChange}
+                index={i}
+                key={i}
+                ref={(instance) => {
+                  this.references[i] = instance
+                }}
+              />
             </Fragment>
           );
         })}
 
-        <hr className="slide-hr"/>
-        <div>
+        <div className='carousel-header-add-remove-slide'>
           <Button isPrimary
                   onClick={this.addNewSlide.bind(this)}
                   disabled={this.props.slides.length >= 4}
           >
             Add Slide
           </Button>
-          <Button isDefault
+          <Button isSecondary
                   onClick={this.removeSlide.bind(this)} disabled={this.props.slides.length <= 1}
           >
             Remove Slide
@@ -163,17 +149,20 @@ export class CarouselHeader extends Component {
             ? this.renderEdit()
             : null
         }
-        <Preview showBar={this.props.isSelected} >
-          <ServerSideRender
-            block={'planet4-blocks/carousel-header'}
-            attributes={{
-              block_style: this.props.block_style,
-              carousel_autoplay: this.props.carousel_autoplay,
-              slides: this.props.slides,
-            }}
-            ref={this.ssrRef}
-          >
-          </ServerSideRender>
+        <Preview showBar={this.props.isSelected}>
+          {
+            this.props.slides.length && this.props.slides[0].image > 0
+            ? <ServerSideRender
+                block={'planet4-blocks/carousel-header'}
+                attributes={{
+                  carousel_autoplay: this.props.carousel_autoplay,
+                  slides: this.props.slides,
+                }}
+              >
+              </ServerSideRender>
+            : <div>Not enough data available to render the block yet.</div>
+          }
+
         </Preview>
       </Fragment>
     );

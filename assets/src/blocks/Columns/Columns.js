@@ -1,17 +1,21 @@
-import { React } from 'react';
 import {Component,Fragment} from "@wordpress/element";
 import {
-  TextControl,
-  TextareaControl,
+  TextareaControl as BaseTextareaControl,
+  TextControl as BaseTextControl,
   ServerSideRender,
   Dashicon,
   Tooltip,
-  ToggleControl
+  ToggleControl, Button
 } from '@wordpress/components';
-import {MediaPlaceholder} from "@wordpress/editor";
+import {MediaPlaceholder, MediaUpload, MediaUploadCheck} from "@wordpress/editor";
 
 import {LayoutSelector} from '../../components/LayoutSelector/LayoutSelector';
 import {Preview} from '../../components/Preview';
+import withCharacterCounter from '../../components/withCharacterCounter/withCharacterCounter';
+import {URLInput} from "../../components/URLInput/URLInput";
+
+const TextControl = withCharacterCounter(BaseTextControl);
+const TextareaControl = withCharacterCounter(BaseTextareaControl);
 
 export class Columns extends Component {
     constructor(props) {
@@ -21,7 +25,48 @@ export class Columns extends Component {
     renderEdit() {
       const {__} = wp.i18n;
 
-      const {columns_title,columns_description,columns_block_style,columns} = this.props;
+      const {columns_title,columns_description,columns_block_style,columns,column_img,onDeleteImage} = this.props;
+
+      const getImageOrButton = (openEvent, index) => {
+        if ( columns[index] && columns[index]['attachment'] && ( 0 <  columns[index]['attachment'] ) ) {
+
+          return (
+
+            <div align='center'>
+              <div>{__('Column %s: Image', 'p4ge').replace('%s', index+1)}</div>
+              <div className="img-wrap">
+                <Tooltip text={__('Remove Column Image', 'p4ge')}>
+                  <span className="close" onClick={ev => {
+                    onDeleteImage(index);
+                    ev.stopPropagation()
+                  }}>&times;</span>
+                </Tooltip>
+              <img
+                src={ column_img[columns[index]['attachment']] }
+                onClick={ openEvent }
+                className='Columns__imgs'
+                width={'400px'}
+                style={{padding: '10px 10px'}}
+              />
+              </div>
+            </div>
+
+          );
+        }
+        else {
+
+          return (
+            <div className='column-img-btn-container'>
+              <div className='column-img-label'>{__('Column %s: Image', 'p4ge').replace('%s', index+1)}</div>
+              <Button
+                onClick={ openEvent }
+                className='button'>
+                + {__('Select Column %s: Image', 'p4ge').replace('%s', index+1)}
+              </Button>
+            </div>
+          );
+        }
+      };
 
       return (
         <Fragment>
@@ -65,12 +110,14 @@ export class Columns extends Component {
               placeholder={__('Enter block title', 'p4ge')}
               value={columns_title}
               onChange={this.props.onTitleChange}
+              characterLimit={40}
             />
             <TextareaControl
               label={__('Description', 'p4ge')}
               placeholder={__('Enter block description', 'p4ge')}
               value={columns_description}
               onChange={this.props.onDescriptionChange}
+              characterLimit={200}
             />
           </div>
           <div>
@@ -78,34 +125,44 @@ export class Columns extends Component {
             {columns.map((item, index) => {
               return (
                 <div key={index}>
-                  <div><hr /><i>{__('In order for the column to appear at least <strong>Header or Body</strong> has to be filled.', 'p4ge')}</i></div>
+                  <div><hr /></div>
+                  { !item.title && !item.description &&
+                   <div><b>{__('Please provide a header or a body for this column to be displayed.', 'p4ge')}</b></div>
+                  }
 
                   <TextControl
                     label={__('Column %s: Header', 'p4ge').replace('%s', index+1)}
                     placeholder={__('Enter header of %s column', 'p4ge').replace('%s', index+1)}
                     value={item.title}
                     onChange={this.props.onColumnHeaderChange.bind(this,index)}
+                    characterLimit={40}
                   />
                   <TextareaControl
                     label={__('Column %s: Body', 'p4ge').replace('%s', index+1)}
                     placeholder={__('Enter body of %s column', 'p4ge').replace('%s', index+1)}
                     value={item.description}
                     onChange={this.props.onColumnDescriptionChange.bind(this,index)}
+                    characterLimit={400}
                   />
 
                   { 'no_image' != columns_block_style &&
-                    <MediaPlaceholder
-                      labels={{ title: __('Column %s: Image', 'p4ge').replace('%s', index+1)}}
-                      icon="format-image"
-                      onSelect={this.props.onSelectImage.bind(this,index)}
-                      onSelectURL={this.props.onSelectURL.bind(this,index)}
-                      onError={this.props.onUploadError}
-                      accept="image/*"
-                      allowedTypes={["image"]}
-                    />
+                    <div className='components-base-control'>
+                      <MediaUploadCheck>
+                        <MediaUpload
+                          type='image'
+                          onSelect={this.props.onSelectImage.bind(this,index)}
+                          value={item.attachment}
+                          allowedTypes={columns_block_style === 'icons' ? ['image/png'] : ['image']}
+                          render={ ({ open }) => getImageOrButton(open, index) }
+                        />
+                      </MediaUploadCheck>
+                      { columns_block_style === 'icons' && item.attachment > 0 && typeof column_img[item.attachment] !== 'undefined' && !column_img[item.attachment].endsWith('.png') &&
+                       <div><b>{__('Please select another image for this column, as the current image is not an icon and you have chosen columns style icons. ', 'p4ge')}</b></div>
+                      }
+                    </div>
                   }
 
-                  <TextControl
+                  <URLInput
                     label={__('Column %s: Button/CtA Link', 'p4ge').replace('%s', index+1)}
                     placeholder={__('Enter link for column %s', 'p4ge').replace('%s', index+1)}
                     value={item.cta_link}
@@ -174,7 +231,13 @@ export class Columns extends Component {
                     columns_block_style: this.props.columns_block_style,
                     columns_title: this.props.columns_title,
                     columns_description: this.props.columns_description,
-                    columns: this.props.columns,
+                    columns: this.props.columns.map( column => {
+                      // Needed here as there is no hook to replace this in the rest api
+                      if ( column.link_new_tab !== true ) {
+                        column.link_new_tab = false;
+                      }
+                      return column;
+                    }),
                   }}>
                 </ServerSideRender>
               </Preview>

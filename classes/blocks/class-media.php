@@ -120,12 +120,12 @@ class Media extends Base_Block {
 
 		// Enqueue js for the frontend.
 		if ( ! $this->is_rest_request() ) {
-			wp_enqueue_script( 'media', P4GBKS_PLUGIN_URL . 'public/js/media.js', [ 'jquery' ], '0.1', true );
+			\P4GBKS\Loader::enqueue_local_script( 'media', 'public/js/media.js', [ 'jquery' ] );
 		}
 
 		$data = [
 			'fields' => [
-				'title'       => $fields['video_title'],
+				'title'       => $fields['video_title'] ?? '',
 				'description' => $description,
 				'embed_html'  => str_replace( 'youtube.com', 'youtube-nocookie.com', $embed_html ),
 				'type'        => $type,

@@ -1,5 +1,5 @@
 // $slide-transition-speed should match SLIDE_TRANSITION_SPEED in carousel-header.js
-$slide-transition-speed: .3s;
+$slide-transition-speed: .2s;
 $text-slide-offset: 50px;
 
 $mobile-image-height: 280px;
@@ -214,25 +214,30 @@ $medium-image-height: 600px;
       }
     }
 
-    &.slide-left {
+    &.shrink-to-left {
       .carousel-item-mask {
         width: 0;
         transition: width $slide-transition-speed;
+
+        html[dir="rtl"] & {
+          direction: ltr;
+
+          .background-holder {
+            direction: rtl;
+          }
+        }
+      }
+
+      html[dir="rtl"] & {
+        direction: ltr;
       }
     }
 
-    &.slide-right {
+    &.shrink-to-right {
       .carousel-item-mask {
         width: 0;
         margin-left: auto;
         right: 0;
-
-        html[dir="rtl"] & {
-          right: auto;
-          margin-left: 0;
-          margin-right: auto;
-          left: 0;
-        }
 
         transition: width $slide-transition-speed;
 
@@ -244,10 +249,14 @@ $medium-image-height: 600px;
         // TODO: Remove in favor of `clip-path` when supported in all major browsers
         // Check for compatibility: https://caniuse.com/#feat=css-clip-path
         direction: rtl;
-      }
 
-      .carousel-item-mask * {
-        direction: ltr;
+        .background-holder {
+          direction: ltr;
+
+          html[dir="rtl"] & {
+            direction: rtl;
+          }
+        }
       }
     }
 
@@ -255,6 +264,7 @@ $medium-image-height: 600px;
       z-index: 1000;
       display: block;
       opacity: 1;
+      position: relative;
 
       .carousel-caption .main-header .carousel-captions-wrapper {
         h1, h2, h3, p {
@@ -274,6 +284,7 @@ $medium-image-height: 600px;
       z-index: 1000;
       display: block;
       opacity: 1;
+      position: relative;
 
       .carousel-caption .main-header .carousel-captions-wrapper {
         h1, h2, h3, p {
@@ -341,7 +352,7 @@ $medium-image-height: 600px;
 
       .caption-overlay {
         display: none;
-        background: url("public/images/carousel-blurred-overlay.png");
+        background: url("../../public/images/carousel-blurred-overlay.png");
         background-position: bottom right;
         background-size: cover;
         height: 100%;
@@ -391,7 +402,7 @@ $medium-image-height: 600px;
         h1, h2, h3 {
           width: 100%;
           font-weight: bold;
-          color: $black;
+          color: $grey-80;
           padding-left: 0;
           transition: unset;
           transform: translateX($text-slide-offset);
@@ -492,7 +503,7 @@ $medium-image-height: 600px;
 
         p {
           display: block;
-          color: $black;
+          color: $grey-80;
           font-family: $roboto;
           font-size: .875rem;
           font-weight: 500;
@@ -631,7 +642,7 @@ $medium-image-height: 600px;
       text-align: center;
       width: 24px;
       height: 46px;
-      background: url("public/images/carousel-arrow-prev.png");
+      background: url("../../public/images/carousel-arrow-prev.png");
       background-size: cover;
 
       @include large-and-up {
@@ -665,7 +676,7 @@ $medium-image-height: 600px;
       width: 24px;
       height: 46px;
       cursor: pointer;
-      background: url("public/images/carousel-arrow-next.png");
+      background: url("../../public/images/carousel-arrow-next.png");
       background-size: contain;
       display: none;
 
@@ -715,6 +726,7 @@ $medium-image-height: 600px;
       width: 40px;
       height: 3px;
       border-radius: 0;
+      border: unset;
       margin: 0 3px;
       cursor: pointer;
       display: inline-table;

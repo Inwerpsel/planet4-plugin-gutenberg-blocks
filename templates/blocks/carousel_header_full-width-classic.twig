@@ -3,10 +3,10 @@
     {{ text|length > maxLength ? text|slice(0, maxLength) ~ '…' : text }}
 {% endmacro %}
 
-<section class="block block-header block-wide carousel-header_{{ fields.block_style }}">
+<section class="block block-header block-wide carousel-header_full-width-classic">
 	<div id="carousel-wrapper-header"
-		data-block-style="{{ fields.block_style }}"
-		data-carousel-autoplay="{{ fields.carousel_autoplay }}">
+		data-block-style="full-width-classic"
+		data-carousel-autoplay="{{ fields.carousel_autoplay == 1 ? 'true' : '' }}">
 
 		{% if fields.total_images > 1 %}
 			<ol class="carousel-indicators"></ol>
@@ -25,10 +25,19 @@
 						<div class="carousel-item-mask">
 							<div class="background-holder">
 								{% if slide.image %}
-									<img src="{{ slide.image }}"
-										data-background-position="{{ slide.focus_image }}"
-										srcset="{{ slide.image_srcset }}"
+									<img
+										{% if ( loop.first ) %}
+										src="{{ slide.image|cf_img_url(slide.image_srcset) }}"
+										srcset="{{ slide.image_srcset|cf_img_url }}"
 										sizes="{{ slide.image_sizes }}"
+										{% else %}
+										data-src="{{ slide.image|cf_img_url(slide.image_srcset) }}"
+										data-srcset="{{ slide.image_srcset|cf_img_url }}"
+										data-sizes="{{ slide.image_sizes }}"
+										class="preload"
+										{% endif %}
+										data-background-position="{{ slide.focus_image }}"
+
 										alt="{{ slide.image_alt  }}">
 
 									<div class="carousel-caption">

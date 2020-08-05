@@ -122,7 +122,8 @@ class Covers extends Base_Block {
 
 		// Enqueue js for the frontend.
 		if ( ! $this->is_rest_request() ) {
-			wp_enqueue_script( 'covers', P4GBKS_PLUGIN_URL . 'public/js/load_more.js', [ 'jquery' ], '0.1', true );
+			\P4GBKS\Loader::enqueue_local_script( 'covers', 'public/js/load_more.js', [ 'jquery' ] );
+			\P4GBKS\Loader::enqueue_local_script( 'pubslider', 'public/js/pubslider.js', [ 'jquery' ] );
 		}
 
 		$data = [
@@ -291,9 +292,14 @@ class Covers extends Base_Block {
 		// Get user defined tags from backend.
 		$tag_ids = $fields['tags'] ?? [];
 
-		// If tags is empty or is not a comma separated integers string then define tags as empty.
-		if ( ! empty( $tag_ids ) ) {
-			$tags = get_tags( [ 'include' => $tag_ids ] );
+		if ( empty( $tag_ids ) ) {
+			return [];
+		}
+
+		$tags = get_tags( [ 'include' => $tag_ids ] );
+
+		if ( ! is_array( $tags ) ) {
+			return [];
 		}
 
 		$covers = [];

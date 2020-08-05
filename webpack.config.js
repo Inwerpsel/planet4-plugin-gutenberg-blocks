@@ -10,8 +10,16 @@ module.exports = {
   entry: {
     editorIndex: './assets/src/editorIndex.js',
     frontendIndex: './assets/src/frontendIndex.js',
+    carouselHeaderFrontIndex: './assets/src/carouselHeaderFrontIndex.js',
     style: './assets/src/styles/style.scss',
-    editorStyle: './assets/src/styles/editorStyle.scss'
+    editorStyle: './assets/src/styles/editorStyle.scss',
+    theme_antarctic: './assets/src/styles/theme_antarctic.scss',
+    theme_arctic: './assets/src/styles/theme_arctic.scss',
+    theme_climate: './assets/src/styles/theme_climate.scss',
+    theme_forest: './assets/src/styles/theme_forest.scss',
+    theme_oceans: './assets/src/styles/theme_oceans.scss',
+    theme_oil: './assets/src/styles/theme_oil.scss',
+    theme_plastic: './assets/src/styles/theme_plastic.scss',
   },
   output: {
     filename: '[name].js',
@@ -28,7 +36,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              url: false
+              url: false,
+              sourceMap: true
             }
           },
           {
@@ -37,7 +46,8 @@ module.exports = {
               ident: 'postcss',
               plugins: function() {
                 return require('autoprefixer');
-              }
+              },
+              sourceMap: true
             }
           },
           {
@@ -80,6 +90,13 @@ module.exports = {
               return [
                 'editorStyle.deps.json',
                 'style.deps.json',
+                'theme_antarctic.deps.json',
+                'theme_arctic.deps.json',
+                'theme_climate.deps.json',
+                'theme_forest.deps.json',
+                'theme_oceans.deps.json',
+                'theme_oil.deps.json',
+                'theme_plastic.deps.json'
               ].filter(item => {
                 return new RegExp(item, 'm').test(filePath);
               }).length > 0;
@@ -93,7 +110,16 @@ module.exports = {
     ...defaultConfig.optimization,
     minimizer: [
       // enable the css minification plugin
-      new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})
+      new TerserJSPlugin({}),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          sourceMap: true,
+          map: {
+            inline: false,
+            annotation: true,
+          }
+        }
+      })
     ]
   }
 };

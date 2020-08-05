@@ -1,0 +1,119 @@
+.block-spreadsheet {
+  display: inline-block;
+  margin-top: $space-xs;
+  margin-bottom: $space-md;
+
+  @include large-and-up {
+    margin-top: $space-md;
+    margin-bottom: $space-lg;
+  }
+}
+
+.table-wrapper {
+  overflow: auto;
+
+  max-height: 320px;
+  margin-top: 1.5rem;
+
+  @include medium-and-up {
+    max-height: 520px;
+    margin-top: 2rem;
+  }
+
+  @include large-and-up {
+    max-height: 575px;
+  }
+}
+
+table.spreadsheet-table {
+  min-width: 100%;
+
+  margin-bottom: 0;
+
+  @include mobile-only {
+    overflow: visible;
+  }
+
+  th {
+    background: var(--spreadsheet-header-background, $table-header-grey);
+    color: $white;
+    border-bottom: 1px solid var(--spreadsheet-header-background, $table-header-grey);
+    cursor: pointer;
+    font-size: $font-size-sm;
+    position: sticky;
+    top: 0;
+
+    svg {
+      width: $space-md;
+      margin-left: $space-xs;
+      // Compensate for a small baseline misalignment
+      margin-top: -2px;
+      // Use opacity instead of `display: none` to avoid jumpyness on headers
+      opacity: 0;
+      transition: opacity .3s, transform .4s;
+    }
+
+    &.spreadsheet-sorted-by {
+      svg {
+        opacity: 1;
+      }
+
+      &.sort-desc {
+        svg {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+
+  tr {
+    color: $table-font-color;
+
+    td {
+      padding: 5px 20px;
+      background: var(--spreadsheet-even-row-background, $table-even-row-grey);
+      font-size: $font-size-xs;
+
+      @include x-large-and-up {
+        font-size: $font-size-xs;
+      }
+
+      .highlighted-text {
+        font-weight: bold;
+      }
+    }
+
+    &:nth-child(odd) {
+      td {
+        background: var(--spreadsheet-odd-row-background, $table-odd-row-grey);
+      }
+    }
+  }
+}
+
+.spreadsheet-loading {
+  padding: $space-xl;
+  text-align: center;
+}
+
+.spreadsheet-search {
+  width: 350px;
+  max-width: 100%;
+  height: 2rem;
+  padding: 0 8px;
+  border-color: var(--spreadsheet-header-background, $table-header-grey);
+  border: 1px solid;
+  font-family: $roboto;
+}
+
+.spreadsheet-empty-message {
+  padding: $space-md;
+  font-size: 1.12rem;
+  line-height: 1.375rem;
+
+  @include medium-and-up {
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    margin: 0 0 24px 0;
+  }
+}

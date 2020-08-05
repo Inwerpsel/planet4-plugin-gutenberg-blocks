@@ -1,4 +1,4 @@
-import {React, Component} from 'react';
+import {Component} from '@wordpress/element';
 import {RadioControl} from '@wordpress/components';
 
 export class LayoutSelector extends Component {
@@ -19,6 +19,11 @@ export class LayoutSelector extends Component {
     return <div className='LayoutSelector'>
       {
         this.props.options.map((layoutOption, i) => {
+
+          if ( 'number' == typeof layoutOption.value ) {
+            this.state.selectedOption = Number( this.state.selectedOption );
+          }
+
           return (
             <label className='LayoutOption' key={i}>
               <div style={{display: 'flex'}}>

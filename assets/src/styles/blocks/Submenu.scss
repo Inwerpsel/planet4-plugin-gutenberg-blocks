@@ -15,7 +15,6 @@
 
     ul.submenu-item {
       flex-basis: 100%;
-      padding: 0;
 
       @include large-and-up {
         flex-basis: 50%;
@@ -34,11 +33,9 @@
     }
 
     li {
-      padding-left: 16px;
-
       &.list-style-bullet::before {
         content: "";
-        background-image: url("public/images/icons/angle-right.svg");
+        background-image: url("../../public/images/icons/angle-right.svg");
         background-position: 50% 50%;
         background-size: 1rem 1rem;
         background-repeat: no-repeat;
@@ -51,8 +48,8 @@
           & {
             background-image: none;
             background-color: $menu-blue;
-            -webkit-mask-image: url("public/images/icons/angle-right.svg");
-            mask-image: url("public/images/icons/angle-right.svg");
+            -webkit-mask-image: url("../../public/images/icons/angle-right.svg");
+            mask-image: url("../../public/images/icons/angle-right.svg");
             mask-repeat: no-repeat;
             -webkit-mask-repeat: no-repeat;
             margin-right: 0;
@@ -69,12 +66,14 @@
 
   &.submenu-short {
     .submenu-menu {
-      ul.submenu-item {
-        flex-basis: 100%;
-        column-count: 3;
+      @include medium-and-up {
+        ul.submenu-item {
+          flex-basis: 100%;
+          column-count: 3;
 
-        li:before {
-          content: "";
+          li:before {
+            content: "";
+          }
         }
       }
     }
@@ -116,7 +115,7 @@
 
 .back-top,
 div.page-template > .back-top {
-  background-image: url("public/images/arrow-up.svg");
+  background-image: url("../../public/images/arrow-up.svg");
   background-repeat: no-repeat;
   position: fixed;
   height: 44px;

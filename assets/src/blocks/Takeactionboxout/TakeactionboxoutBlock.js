@@ -137,7 +137,7 @@ export class TakeactionboxoutBlock {
 				if (background_image) {
 					background_image_url = select('core').getMedia(background_image);
 					if ( background_image_url ) {
-						background_image_url = background_image_url.media_details.sizes.medium.source_url;
+						background_image_url = background_image_url.source_url;
 					}
 				}
 
@@ -166,7 +166,7 @@ export class TakeactionboxoutBlock {
 				// These methods are passed down to the
 				// Articles component, they update the corresponding attribute.
 				function onSelectTakeActoinPage( value ) {
-					setAttributes({ take_action_page: value });
+					setAttributes({ take_action_page: parseInt(value) });
 				}
 
 				function onCustomTitleChange(value) {

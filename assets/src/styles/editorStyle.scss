@@ -15,32 +15,29 @@
 @import "styleguide/src/layout/tables";
 @import "styleguide/src/layout/navbar";
 @import "styleguide/src/layout/page-header";
+@import "styleguide/src/layout/breadcrumbs";
 
-@import "blocks/Articles";
-@import "blocks/Columns";
-@import "blocks/Covers";
-@import "blocks/Gallery_carousel";
-@import "blocks/Gallery_content_three_column";
-@import "blocks/Gallery_grid";
-@import "blocks/Happypoint";
-@import "blocks/Media";
-@import "blocks/Socialmedia";
-@import "blocks/SplitTwoColumns";
-@import "blocks/Submenu";
-@import "blocks/Timeline";
-@import "blocks/Counter";
+@import "blocks/TableEditor";
 
-@import "blocks/core-overrides/Image";
+@import "blocks";
+
 @import "blocks/ArticlesEditor";
 @import "blocks/CarouselHeaderEditor";
 @import "blocks/CarouselHeaderEditorOverrides";
+@import "blocks/ColumnsEditor";
+@import "blocks/GalleryEditor";
 @import "blocks/SplitTwoColumnsEditor";
 @import "blocks/SubmenuEditor";
-
-@import "blocks/core-overrides/Image";
 
 @import "components/LayoutSelector";
 @import "components/EmptyMessage";
 @import "components/Preview";
+@import "components/CharacterCounter";
+@import "campaigns/base/fonts";
+@import "components/FormSectionTitle";
+@import "components/FormHelp";
+@import "components/InlineFormFeedback";
+@import "components/ValidationMessage";
+@import "components/FormField";
 
 @import "editorOverrides";

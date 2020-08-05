@@ -1,43 +1,33 @@
 .columns-block {
   a {
-    text-decoration: none;
     font-weight: inherit;
-    color: $dark-blue;
+
+    &.btn-primary {
+      color: $white;
+    }
+
+    &.btn-primary, &.btn-secondary {
+      text-decoration: none !important;
+    }
   }
 
-  // Specific rules when 1 or 2 columns only.
-  .column-wrap:nth-last-child(2):first-child,
-  .column-wrap:nth-last-child(1):nth-child(2),
-  .column-wrap:nth-last-child(1):first-child {
-    h3, h3 > a {
-      line-height: 1.2;
-      font-size: $font-size-lg;
-      font-family: $roboto;
-      font-weight: 700;
+  h3, h3 > a {
+    line-height: 1.6rem;
+    font-size: $font-size-lg;
+    font-family: $roboto;
+    font-weight: 700;
 
-      @include medium-and-up {
-        font-size: 1.5rem;
-      }
-
-      @include large-and-up {
-        font-size: $font-size-xl;
-      }
-
-      @include x-large-and-up {
-        font-size: 1.875rem;
-        line-height: 1.2;
-      }
+    @include medium-and-up {
+      font-size: 1.5rem;
     }
 
-    p {
-      font-size: $font-size-sm;
-      color: $dark-shade-black;
-
-      @include x-large-and-up {
-        font-size: 1.125rem;
-        line-height: 1.6;
-      }
+    @include large-and-up {
+      font-size: 1.5rem;
     }
+  }
+
+  h3 > a:hover {
+    text-decoration: underline;
   }
 
   // Columns block, layout no-image.
@@ -51,70 +41,51 @@
     }
 
     .column-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       margin-top: $space-xl;
 
       @include large-and-up {
         margin-top: 0;
       }
 
-      &.has-cta {
-        @include medium-and-up {
-          padding-bottom: $space-xl; // Leave enough room for the CTA button
-        }
-      }
-
       h3 {
-        font-size: $font-size-lg;
-        font-weight: bold;
-        line-height: 1.2;
         margin-bottom: $space-md;
-        color: $black;
 
         @include medium-and-up {
-          font-size: 1.5rem;
           width: 80%;
         }
 
         @include large-and-up {
-          font-size: $font-size-md;
           width: 75%;
         }
       }
 
       p {
-        font-size: $font-size-sm;
-        line-height: 1.6;
-        margin-bottom: $space-lg;
-        color: $dark-shade-black;
+        flex-grow: 1;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
 
         @include medium-and-up {
           width: auto;
+          margin-bottom: $space-lg;
         }
 
         @include large-and-up {
-          margin-bottom: $space-xxl;
-          font-size: $font-size-xxs;
           width: 82%;
         }
 
         @include x-large-and-up {
-          font-size: $font-size-xs;
           width: 76%;
-        }
-
-        &:last-child {
-          margin-bottom: 0;
         }
       }
 
       .btn {
         position: relative;
         margin-bottom: 0;
-
-        @include medium-and-up {
-          position: absolute;
-          bottom: 0;
-        }
       }
     }
   }
@@ -130,16 +101,13 @@
     }
 
     .column-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       margin-bottom: $space-xl;
 
       @include large-and-up {
         margin-bottom: 0;
-      }
-
-      &.has-cta {
-        @include large-and-up {
-          padding-bottom: $space-md; // Leave enough room for the CTA link
-        }
       }
 
       h3,
@@ -151,40 +119,11 @@
         }
       }
 
-      h3 {
-        line-height: 1.2;
-        margin-bottom: $space-md;
-        font-size: $font-size-md;
-
-        @include large-and-up {
-          font-weight: 500;
-        }
-
-        a {
-          font-weight: 700;
-
-          @include medium-and-up {
-            font-size: 1.125rem;
-          }
-
-          @include x-large-and-up {
-            font-size: $font-size-md;
-          }
-        }
-      }
-
       p {
-        font-size: $font-size-sm;
-        line-height: 1.6;
-        color: $dark-shade-black;
+        flex-grow: 1;
 
         @include medium-and-up {
-          font-size: $font-size-xxs;
           margin-bottom: $space-lg;
-        }
-
-        @include x-large-and-up {
-          font-size: $font-size-xs;
         }
 
         &:last-child {
@@ -199,29 +138,8 @@
       a {
         font-family: $roboto;
 
-        @include medium-and-up {
-          font-size: $font-size-xs;
-        }
-
-        @include large-and-up {
-          font-size: $font-size-xxs;
-        }
-
-        @include x-large-and-up {
-          font-size: $font-size-xs;
-        }
-
-        &:hover {
-          text-decoration: underline;
-        }
-
         &.call-to-action-link {
           position: relative;
-
-          @include medium-and-up {
-            position: absolute;
-            bottom: 0;
-          }
         }
       }
 
@@ -345,12 +263,12 @@
           }
 
           @include large-and-up {
-            color: $dark-shade-black;
+            color: $grey-80;
           }
         }
 
         p {
-          color: $dark-shade-black;
+          color: $grey-80;
           font-size: $font-size-xxs;
           opacity: 0.75;
           margin-bottom: 0;
@@ -409,6 +327,8 @@
         box-shadow: none;
 
         .card-header {
+          display: block;
+          cursor: pointer;
           font-weight: 400;
           font-size: $font-size-xs;
           font-family: $roboto;
@@ -466,7 +386,7 @@
           border-bottom: none;
 
           p {
-            color: $dark-shade-black;
+            color: $grey-80;
             font-size: $font-size-xxs;
             line-height: 22px;
             margin-left: 0;
@@ -497,33 +417,14 @@
     .row .col:nth-last-child(2):first-child,
     .row .col:nth-last-child(1):nth-child(2),
     .row .col:nth-last-child(1):first-child {
-      h5, h3 {
-        line-height: 1.2;
+      h5 {
+        line-height: 1.6rem;
         font-size: $font-size-lg;
         font-family: $roboto;
         font-weight: 700;
 
-        @include medium-and-up {
-          font-size: 1.5rem;
-        }
-
         @include large-and-up {
-          font-size: $font-size-xl;
-        }
-
-        @include x-large-and-up {
-          font-size: 1.875rem;
-          line-height: 1.2;
-        }
-      }
-
-      p {
-        font-size: $font-size-sm;
-        color: $dark-shade-black;
-
-        @include x-large-and-up {
-          font-size: 1.125rem;
-          line-height: 1.6;
+          font-size: 1.5rem;
         }
       }
     }
@@ -531,16 +432,13 @@
 
   &.block-style-image {
     .column-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       margin-bottom: $space-lg;
 
       @include large-and-up {
         margin-bottom: 0;
-      }
-
-      &.has-cta {
-        @include large-and-up {
-          padding-bottom: $space-md; // Leave enough room for the CTA link
-        }
       }
 
       h3,
@@ -552,40 +450,11 @@
         }
       }
 
-      h3 {
-        line-height: 1.2;
-        margin-bottom: $space-md;
-        font-size: $font-size-md;
-
-        @include large-and-up {
-          font-weight: 500;
-        }
-
-        a {
-          font-weight: 700;
-
-          @include medium-and-up {
-            font-size: 1.125rem;
-          }
-
-          @include x-large-and-up {
-            font-size: $font-size-md;
-          }
-        }
-      }
-
       p {
-        font-size: $font-size-sm;
-        line-height: 1.6;
-        color: $dark-shade-black;
+        flex-grow: 1;
 
         @include medium-and-up {
-          font-size: $font-size-xxs;
           margin-bottom: $space-lg;
-        }
-
-        @include x-large-and-up {
-          font-size: $font-size-xs;
         }
 
         &:last-child {
@@ -600,29 +469,8 @@
       a {
         font-family: $roboto;
 
-        @include medium-and-up {
-          font-size: $font-size-xs;
-        }
-
-        @include large-and-up {
-          font-size: $font-size-xxs;
-        }
-
-        @include x-large-and-up {
-          font-size: $font-size-xs;
-        }
-
-        &:hover {
-          text-decoration: underline;
-        }
-
         &.call-to-action-link {
           position: relative;
-
-          @include medium-and-up {
-            position: absolute;
-            bottom: 0;
-          }
         }
       }
 
@@ -660,7 +508,6 @@
       .column-wrap {
         h3 {
           @include large-and-up {
-            font-size: 1.5rem;
             width: 80%;
           }
         }
@@ -694,12 +541,6 @@
         img {
           @include x-large-and-up {
             margin-bottom: 0;
-          }
-        }
-
-        &.has-cta {
-          @include large-and-up {
-            padding-bottom: 0; // Leave enough room for the CTA link
           }
         }
       }

@@ -31,12 +31,10 @@ class P4_ShortcodeConverterTest extends P4_UnitTestCase {
 	 * @param string $shortcode  Shortcake shortcode.
 	 * @param string $expected   Expected converted to gutenberg block.
 	 *
-	 * @dataProvider articles_shortcodes_provider
 	 * @dataProvider carousel_header_shortcodes_provider
 	 * @dataProvider columns_shortcodes_provider
 	 * @dataProvider covers_shortcodes_provider
 	 * @dataProvider cookies_shortcodes_provider
-	 * @dataProvider counter_shortcodes_provider
 	 * @dataProvider gallery_shortcodes_provider
 	 * @dataProvider happy_point_shortcodes_provider
 	 * @dataProvider media_shortcodes_provider
@@ -61,116 +59,14 @@ class P4_ShortcodeConverterTest extends P4_UnitTestCase {
 	 *
 	 * @return array
 	 */
-	public function articles_shortcodes_provider(): array {
-		return [
-
-			// 1-5
-			'articles_ignore_categories_false'   =>
-				[
-					'[shortcake_articles ignore_categories="false" /]',
-					'<!-- wp:planet4-blocks/articles {"ignore_categories":false} /-->',
-				],
-			'articles_ignore_categories_true'    =>
-				[
-					'[shortcake_articles ignore_categories="true" /]',
-					'<!-- wp:planet4-blocks/articles {"ignore_categories":true} /-->',
-				],
-			'articles_ignore_categories_invalid' =>
-				[
-					'[shortcake_articles ignore_categories="invalid" /]',
-					'<!-- wp:planet4-blocks/articles {"ignore_categories":false} /-->',
-				],
-			'articles_invalid_count'             =>
-				[
-					'[shortcake_articles article_count="invalid" /]',
-					'<!-- wp:planet4-blocks/articles {"article_count":0} /-->',
-				],
-			'articles_invalid_tags'              =>
-				[
-					'[shortcake_articles tags="inva,lid" /]',
-					'<!-- wp:planet4-blocks/articles {"tags":[]} /-->',
-				],
-			'articles_button_link_new_tab'       =>
-				[
-					'[shortcake_articles button_link_new_tab="true" /]',
-					'<!-- wp:planet4-blocks/articles {"button_link_new_tab":true} /-->',
-				],
-			[
-				'[shortcake_articles article_heading="Aliquam nisl magna" article_count="4" read_more_text="Duis sollicitudin" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Aliquam nisl magna","article_count":4,"read_more_text":"Duis sollicitudin"} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Articles Block Title" read_more_text="Learn more" articles_description="Celery quandong swiss chard chicory earthnut pea potato. Salsify taro catsear garlic gram celery bitterleaf wattle seed collard greens nori. Grape wattle seed kombu beetroot horseradish carrot squash brussels sprout chard." post_types="14,16,15" article_count="5" ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Articles Block Title","read_more_text":"Learn more","articles_description":"Celery quandong swiss chard chicory earthnut pea potato. Salsify taro catsear garlic gram celery bitterleaf wattle seed collard greens nori. Grape wattle seed kombu beetroot horseradish carrot squash brussels sprout chard.","post_types":[14,16,15],"article_count":5,"ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles posts="256,260" read_more_text="load more" /]',
-				'<!-- wp:planet4-blocks/articles {"posts":[256,260],"read_more_text":"load more"} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Articles block " read_more_text="Read More" article_count="4" ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Articles block ","read_more_text":"Read More","article_count":4,"ignore_categories":false} /-->',
-			],
-
-			// 5-10
-			[
-				'[shortcake_articles article_heading="In the news" article_count="4" read_more_text="Read More " ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"In the news","article_count":4,"read_more_text":"Read More ","ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="In the news" article_count="4" read_more_text="Read More " ignore_categories="false" p4_page_type_press="true" p4_page_type_publication="true" p4_page_type_story="true" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"In the news","article_count":4,"read_more_text":"Read More ","ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="In the news" post_types="59" article_count="3" ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"In the news","post_types":[59],"article_count":3,"ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Latest Articles" article_count="3" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Latest Articles","article_count":3} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Latest Press Releases" article_count="10" read_more_text="All Press Releases" ignore_categories="true" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Latest Press Releases","article_count":10,"read_more_text":"All Press Releases","ignore_categories":true} /-->',
-			],
-
-			// 10-15
-			[
-				'[shortcake_articles article_heading="Latest Press Releases" article_count="10" read_more_text="All Press Releases" ignore_categories="true" p4_page_type_press="true" p4_page_type_press_release="false" p4_page_type_publication="false" p4_page_type_story="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Latest Press Releases","article_count":10,"read_more_text":"All Press Releases","ignore_categories":true} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Latest Press Releases" post_types="98" article_count="8" ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Latest Press Releases","post_types":[98],"article_count":8,"ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Latest news about forests" post_types="98,59" tags="84" article_count="3" ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Latest news about forests","post_types":[98,59],"tags":[84],"article_count":3,"ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Related Articles" post_types="98,59" tags="91" article_count="3" ignore_categories="false" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Related Articles","post_types":[98,59],"tags":[91],"article_count":3,"ignore_categories":false} /-->',
-			],
-			[
-				'[shortcake_articles article_heading="Latest updates" article_count="3" read_more_link="https://release.k8s.p4.greenpeace.org/international/?s=&orderby=post_date&f%5Bcat%5D%5BPeople%5D=73" /]',
-				'<!-- wp:planet4-blocks/articles {"article_heading":"Latest updates","article_count":3,"read_more_link":"https://release.k8s.p4.greenpeace.org/international/?s=&orderby=post_date&f%5Bcat%5D%5BPeople%5D=73"} /-->',
-			],
-		];
-	}
-
-	/**
-	 * Planet4 blocks shortocodes provider.
-	 *
-	 * @return array
-	 */
 	public function carousel_header_shortcodes_provider(): array {
 
 		return [
 			'carousel header 3 slides' =>
 				[
-					'[shortcake_carousel_header block_style = "full-width-classic" carousel_autoplay = "true" image_1 = "16" focus_image_1 = "center center" header_1 = "Carousel header - full width  1" description_1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique orci odio, ac dignissim nibh consequat id. Cras at mauris nibh. Morbi rutrum sodales urna in porta. Nunc placerat pretium nisl ac rhoncus. Proin sit amet arcu a justo gravida vulputate." link_text_1 = "Curabitur rutrum viverra" image_2 = "348" focus_image_2 = "center center" header_2 = "Carousel header - full width  2" description_2 = "Pellentesque cursus condimentum dolor vitae bibendum. Vivamus aliquam eget enim sit amet tincidunt. Fusce sagittis sagittis lacinia. Praesent nisl magna, finibus eget ipsum ultrices, feugiat mattis quam." link_text_2 = "Pellentesque cursus" image_3 = "357" focus_image_3 = "left top" header_3 = "Carousel header - full width  3" description_3 = "Nam condimentum sapien ut nunc eleifend scelerisque nec eget odio. Curabitur interdum efficitur magna at blandit. Donec congue massa id sem porta, eu iaculis dui pretium." focus_image_4 = "left top" /]',
+					'[shortcake_carousel_header carousel_autoplay = "true" image_1 = "16" focus_image_1 = "center center" header_1 = "Carousel header - full width  1" description_1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique orci odio, ac dignissim nibh consequat id. Cras at mauris nibh. Morbi rutrum sodales urna in porta. Nunc placerat pretium nisl ac rhoncus. Proin sit amet arcu a justo gravida vulputate." link_text_1 = "Curabitur rutrum viverra" image_2 = "348" focus_image_2 = "center center" header_2 = "Carousel header - full width  2" description_2 = "Pellentesque cursus condimentum dolor vitae bibendum. Vivamus aliquam eget enim sit amet tincidunt. Fusce sagittis sagittis lacinia. Praesent nisl magna, finibus eget ipsum ultrices, feugiat mattis quam." link_text_2 = "Pellentesque cursus" image_3 = "357" focus_image_3 = "left top" header_3 = "Carousel header - full width  3" description_3 = "Nam condimentum sapien ut nunc eleifend scelerisque nec eget odio. Curabitur interdum efficitur magna at blandit. Donec congue massa id sem porta, eu iaculis dui pretium." focus_image_4 = "left top" /]',
 
-					'<!-- wp:planet4-blocks/carousel-header {"block_style":"full-width-classic","carousel_autoplay":"true","slides":[{"image":16,"focal_points":{"x":0.5,"y":0.5},"header":"Carousel header - full width  1","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique orci odio, ac dignissim nibh consequat id. Cras at mauris nibh. Morbi rutrum sodales urna in porta. Nunc placerat pretium nisl ac rhoncus. Proin sit amet arcu a justo gravida vulputate.","link_text":"Curabitur rutrum viverra"},{"image":348,"focal_points":{"x":0.5,"y":0.5},"header":"Carousel header - full width  2","description":"Pellentesque cursus condimentum dolor vitae bibendum. Vivamus aliquam eget enim sit amet tincidunt. Fusce sagittis sagittis lacinia. Praesent nisl magna, finibus eget ipsum ultrices, feugiat mattis quam.","link_text":"Pellentesque cursus"},{"image":357,"focal_points":{"x":0,"y":0},"header":"Carousel header - full width  3","description":"Nam condimentum sapien ut nunc eleifend scelerisque nec eget odio. Curabitur interdum efficitur magna at blandit. Donec congue massa id sem porta, eu iaculis dui pretium."}]} /-->'
+					'<!-- wp:planet4-blocks/carousel-header {"carousel_autoplay":true,"slides":[{"image":16,"focal_points":{"x":0.5,"y":0.5},"header":"Carousel header - full width  1","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique orci odio, ac dignissim nibh consequat id. Cras at mauris nibh. Morbi rutrum sodales urna in porta. Nunc placerat pretium nisl ac rhoncus. Proin sit amet arcu a justo gravida vulputate.","link_text":"Curabitur rutrum viverra"},{"image":348,"focal_points":{"x":0.5,"y":0.5},"header":"Carousel header - full width  2","description":"Pellentesque cursus condimentum dolor vitae bibendum. Vivamus aliquam eget enim sit amet tincidunt. Fusce sagittis sagittis lacinia. Praesent nisl magna, finibus eget ipsum ultrices, feugiat mattis quam.","link_text":"Pellentesque cursus"},{"image":357,"focal_points":{"x":0,"y":0},"header":"Carousel header - full width  3","description":"Nam condimentum sapien ut nunc eleifend scelerisque nec eget odio. Curabitur interdum efficitur magna at blandit. Donec congue massa id sem porta, eu iaculis dui pretium."}]} /-->'
 				],
 
 			'carousel header 2 slides' =>
@@ -182,23 +78,23 @@ class P4_ShortcodeConverterTest extends P4_UnitTestCase {
 
 			'carousel header 1 slide with invalid 2,3,4 attributes' =>
 				[
-					'[shortcake_carousel_header block_style="full-width-classic" image_1="22156" focus_image_1="center bottom" header_1="Wat doet Greenpeace zelf?" header_size_1="h1" description_1="Wij werken al jaren intensief samen met de lokale bevolking in de Amazone. Ook hebben we nauwe banden met milieuorganisaties in de regio om onze slagkracht zo groot mogelijk te maken." link_url_new_tab_1="false" focus_image_2="left top" header_size_2="h1" link_url_new_tab_2="false" focus_image_3="left top" header_size_3="h1" link_url_new_tab_3="false" focus_image_4="left top" header_size_4="h1" link_url_new_tab_4="false" /]',
+					'[shortcake_carousel_header image_1="22156" focus_image_1="center bottom" header_1="Wat doet Greenpeace zelf?" header_size_1="h1" description_1="Wij werken al jaren intensief samen met de lokale bevolking in de Amazone. Ook hebben we nauwe banden met milieuorganisaties in de regio om onze slagkracht zo groot mogelijk te maken." link_url_new_tab_1="false" focus_image_2="left top" header_size_2="h1" link_url_new_tab_2="false" focus_image_3="left top" header_size_3="h1" link_url_new_tab_3="false" focus_image_4="left top" header_size_4="h1" link_url_new_tab_4="false" /]',
 
-					'<!-- wp:planet4-blocks/carousel-header {"block_style":"full-width-classic","slides":[{"image":22156,"focal_points":{"x":0.5,"y":1},"header":"Wat doet Greenpeace zelf?","header_size":"h1","description":"Wij werken al jaren intensief samen met de lokale bevolking in de Amazone. Ook hebben we nauwe banden met milieuorganisaties in de regio om onze slagkracht zo groot mogelijk te maken.","link_url_new_tab":false}]} /-->'
+					'<!-- wp:planet4-blocks/carousel-header {"slides":[{"image":22156,"focal_points":{"x":0.5,"y":1},"header":"Wat doet Greenpeace zelf?","header_size":"h1","description":"Wij werken al jaren intensief samen met de lokale bevolking in de Amazone. Ook hebben we nauwe banden met milieuorganisaties in de regio om onze slagkracht zo groot mogelijk te maken.","link_url_new_tab":false}]} /-->'
 				],
 
 			'carousel header 3 slides with invalid 4th attributes' =>
 				[
-					'[shortcake_carousel_header block_style="full-width-classic" image_1="20122" focus_image_1="center center" header_1="Wist je dat..." header_size_1="h1" description_1="...wij de natuur opeten? 80% van de ontbossing wordt veroorzaakt door de industriële landbouw. Met name voor de productie van vlees, soja voor veevoer, palmolie en cacao." link_text_1="Ja, ik teken!" link_url_1="#petitie" link_url_new_tab_1="false" image_2="23797" focus_image_2="center top" header_2="Wist je dat..." header_size_2="h1" description_2="… de natuur ons gratis diensten levert? Schone lucht, drinkwater en bestuiving voor ons voedsel. En niet onbelangrijk, natuur draagt bij aan innerlijke rust." link_text_2="Ja. ik teken!" link_url_2="https://www.greenpeace.org/nl/acties/bossenwet/#petitie" link_url_new_tab_2="false" image_3="23798" focus_image_3="left bottom" header_3="Wist je dat..." header_size_3="h1" description_3="… 1 miljoen plant- en diersoorten dreigen uit te sterven. Dat is 1 op de 8 van alle soorten." link_text_3="Ja. ik teken!" link_url_3="https://www.greenpeace.org/nl/acties/bossenwet/#petitie" link_url_new_tab_3="false" focus_image_4="left top" header_size_4="h1" link_url_new_tab_4="false" /]',
+					'[shortcake_carousel_header image_1="20122" focus_image_1="center center" header_1="Wist je dat..." header_size_1="h1" description_1="...wij de natuur opeten? 80% van de ontbossing wordt veroorzaakt door de industriële landbouw. Met name voor de productie van vlees, soja voor veevoer, palmolie en cacao." link_text_1="Ja, ik teken!" link_url_1="#petitie" link_url_new_tab_1="false" image_2="23797" focus_image_2="center top" header_2="Wist je dat..." header_size_2="h1" description_2="… de natuur ons gratis diensten levert? Schone lucht, drinkwater en bestuiving voor ons voedsel. En niet onbelangrijk, natuur draagt bij aan innerlijke rust." link_text_2="Ja. ik teken!" link_url_2="https://www.greenpeace.org/nl/acties/bossenwet/#petitie" link_url_new_tab_2="false" image_3="23798" focus_image_3="left bottom" header_3="Wist je dat..." header_size_3="h1" description_3="… 1 miljoen plant- en diersoorten dreigen uit te sterven. Dat is 1 op de 8 van alle soorten." link_text_3="Ja. ik teken!" link_url_3="https://www.greenpeace.org/nl/acties/bossenwet/#petitie" link_url_new_tab_3="false" focus_image_4="left top" header_size_4="h1" link_url_new_tab_4="false" /]',
 
-					'<!-- wp:planet4-blocks/carousel-header {"block_style":"full-width-classic","slides":[{"image":20122,"focal_points":{"x":0.5,"y":0.5},"header":"Wist je dat...","header_size":"h1","description":"...wij de natuur opeten? 80% van de ontbossing wordt veroorzaakt door de industri\u00eble landbouw. Met name voor de productie van vlees, soja voor veevoer, palmolie en cacao.","link_text":"Ja, ik teken!","link_url":"#petitie","link_url_new_tab":false},{"image":23797,"focal_points":{"x":0.5,"y":0},"header":"Wist je dat...","header_size":"h1","description":"\u2026 de natuur ons gratis diensten levert? Schone lucht, drinkwater en bestuiving voor ons voedsel. En niet onbelangrijk, natuur draagt bij aan innerlijke rust.","link_text":"Ja. ik teken!","link_url":"https://www.greenpeace.org/nl/acties/bossenwet/#petitie","link_url_new_tab":false},{"image":23798,"focal_points":{"x":0,"y":1},"header":"Wist je dat...","header_size":"h1","description":"\u2026 1 miljoen plant- en diersoorten dreigen uit te sterven. Dat is 1 op de 8 van alle soorten.","link_text":"Ja. ik teken!","link_url":"https://www.greenpeace.org/nl/acties/bossenwet/#petitie","link_url_new_tab":false}]} /-->'
+					'<!-- wp:planet4-blocks/carousel-header {"slides":[{"image":20122,"focal_points":{"x":0.5,"y":0.5},"header":"Wist je dat...","header_size":"h1","description":"...wij de natuur opeten? 80% van de ontbossing wordt veroorzaakt door de industri\u00eble landbouw. Met name voor de productie van vlees, soja voor veevoer, palmolie en cacao.","link_text":"Ja, ik teken!","link_url":"#petitie","link_url_new_tab":false},{"image":23797,"focal_points":{"x":0.5,"y":0},"header":"Wist je dat...","header_size":"h1","description":"\u2026 de natuur ons gratis diensten levert? Schone lucht, drinkwater en bestuiving voor ons voedsel. En niet onbelangrijk, natuur draagt bij aan innerlijke rust.","link_text":"Ja. ik teken!","link_url":"https://www.greenpeace.org/nl/acties/bossenwet/#petitie","link_url_new_tab":false},{"image":23798,"focal_points":{"x":0,"y":1},"header":"Wist je dat...","header_size":"h1","description":"\u2026 1 miljoen plant- en diersoorten dreigen uit te sterven. Dat is 1 op de 8 van alle soorten.","link_text":"Ja. ik teken!","link_url":"https://www.greenpeace.org/nl/acties/bossenwet/#petitie","link_url_new_tab":false}]} /-->'
 				],
 
 			'carousel header 4 slides' =>
 				[
-					'[shortcake_carousel_header block_style="full-width-classic" carousel_autoplay="true" image_1="19059" focus_image_1="center top" header_1="Attentie, attentie" subheader_1="dit is een klimaatcrisis." description_1="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_1="Teken nu de petitie!" link_url_1="#petitie" image_2="19073" focus_image_2="left top" header_2="Attentie, attentie" description_2="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_2="Teken nu de petitie!" link_url_2="#petitie" image_3="19068" focus_image_3="left top" header_3="Attentie, attentie" description_3="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_3="Teken nu de petitie!" link_url_3="#petitie" image_4="19074" focus_image_4="left top" header_4="Attentie, attentie" description_4="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_4="Teken nu de petitie!" link_url_4="#petitie" /]',
+					'[shortcake_carousel_header carousel_autoplay="true" image_1="19059" focus_image_1="center top" header_1="Attentie, attentie" subheader_1="dit is een klimaatcrisis." description_1="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_1="Teken nu de petitie!" link_url_1="#petitie" image_2="19073" focus_image_2="left top" header_2="Attentie, attentie" description_2="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_2="Teken nu de petitie!" link_url_2="#petitie" image_3="19068" focus_image_3="left top" header_3="Attentie, attentie" description_3="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_3="Teken nu de petitie!" link_url_3="#petitie" image_4="19074" focus_image_4="left top" header_4="Attentie, attentie" description_4="Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht." link_text_4="Teken nu de petitie!" link_url_4="#petitie" /]',
 
-					'<!-- wp:planet4-blocks/carousel-header {"block_style":"full-width-classic","carousel_autoplay":"true","slides":[{"image":19059,"focal_points":{"x":0.5,"y":0},"header":"Attentie, attentie","subheader":"dit is een klimaatcrisis.","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"},{"image":19073,"focal_points":{"x":0,"y":0},"header":"Attentie, attentie","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"},{"image":19068,"focal_points":{"x":0,"y":0},"header":"Attentie, attentie","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"},{"image":19074,"focal_points":{"x":0,"y":0},"header":"Attentie, attentie","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"}]} /-->'
+					'<!-- wp:planet4-blocks/carousel-header {"carousel_autoplay":true,"slides":[{"image":19059,"focal_points":{"x":0.5,"y":0},"header":"Attentie, attentie","subheader":"dit is een klimaatcrisis.","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"},{"image":19073,"focal_points":{"x":0,"y":0},"header":"Attentie, attentie","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"},{"image":19068,"focal_points":{"x":0,"y":0},"header":"Attentie, attentie","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"},{"image":19074,"focal_points":{"x":0,"y":0},"header":"Attentie, attentie","description":"Klimaatverandering is geen sciencefictionverhaal meer, het is aan de orde van de dag. Oogsten mislukken, complete eilanden dreigen te verdwijnen en extreem weer hangt steeds vaker in de lucht.","link_text":"Teken nu de petitie!","link_url":"#petitie"}]} /-->'
 				],
 
 			'carousel header 2 slides with custom urls' =>
@@ -230,7 +126,7 @@ class P4_ShortcodeConverterTest extends P4_UnitTestCase {
 				[
 					'[shortcake_columns columns_block_style="tasks" columns_title="What you can do (Column block - Tasks)" columns_description="More than ever, the world needs to realise the importance of protecting the Congo Basin Forest." title_1="Send a wish" description_1="More than ever, the world needs to realise the importance of protecting the Congo Basin Forest." attachment_1="348" link_1="www.google.com" link_new_tab_1="false" cta_text_1="Add your wish" title_2="Dance for the Congo" description_2="Post a video of your Congo Selfie Sway on your Facebook feed with the hashtag #DanceForTheCongo" attachment_2="87" link_2="www.facebook.com" link_new_tab_2="false" cta_text_2="Post your video" title_3="Show the world" description_3="Share this spectacular video to show the world why we need to look after the Congo Basin Forest." attachment_3="86" link_3="www.youtube.com" link_new_tab_3="false" cta_text_3="Share your video" link_new_tab_4="false" /]',
 
-					'<!-- wp:planet4-blocks/columns {"columns_block_style":"tasks","columns_title":"What you can do (Column block - Tasks)","columns_description":"More than ever, the world needs to realise the importance of protecting the Congo Basin Forest.","columns":[{"title":"Send a wish","description":"More than ever, the world needs to realise the importance of protecting the Congo Basin Forest.","attachment":348,"cta_link":"www.google.com","link_new_tab":"false","cta_text":"Add your wish"},{"title":"Dance for the Congo","description":"Post a video of your Congo Selfie Sway on your Facebook feed with the hashtag #DanceForTheCongo","attachment":87,"cta_link":"www.facebook.com","link_new_tab":"false","cta_text":"Post your video"},{"title":"Show the world","description":"Share this spectacular video to show the world why we need to look after the Congo Basin Forest.","attachment":86,"cta_link":"www.youtube.com","link_new_tab":"false","cta_text":"Share your video"}]} /-->',
+					'<!-- wp:planet4-blocks/columns {"columns_block_style":"tasks","columns_title":"What you can do (Column block - Tasks)","columns_description":"More than ever, the world needs to realise the importance of protecting the Congo Basin Forest.","columns":[{"title":"Send a wish","description":"More than ever, the world needs to realise the importance of protecting the Congo Basin Forest.","attachment":348,"cta_link":"www.google.com","link_new_tab":false,"cta_text":"Add your wish"},{"title":"Dance for the Congo","description":"Post a video of your Congo Selfie Sway on your Facebook feed with the hashtag #DanceForTheCongo","attachment":87,"cta_link":"www.facebook.com","link_new_tab":false,"cta_text":"Post your video"},{"title":"Show the world","description":"Share this spectacular video to show the world why we need to look after the Congo Basin Forest.","attachment":86,"cta_link":"www.youtube.com","link_new_tab":false,"cta_text":"Share your video"}]} /-->',
 				],
 
 			'columns 4 columns' =>
@@ -271,7 +167,7 @@ class P4_ShortcodeConverterTest extends P4_UnitTestCase {
 				[
 					'[shortcake_columns columns_block_style="icons" title_1="Ginger Gosnell-Myers, Board Member" description_1="Ginger, of Nisga’a and Kwakwaka’wakw heritage, is currently the City of Vancouver’s Aboriginal Relations manager whose role is in managing the emerging understandings between First Nations communities and Vancouver’s more recent inhabitants. Ginger’s ultimate goal is to advance reconciliation and promote understanding of Vancouver as unceded territory." attachment_1="1989" link_new_tab_1="false" link_new_tab_2="false" link_new_tab_3="false" link_new_tab_4="false" /]',
 
-					'<!-- wp:planet4-blocks/columns {"columns_block_style":"icons","columns":[{"title":"Ginger Gosnell-Myers, Board Member","description":"Ginger, of Nisga\u2019a and Kwakwaka\u2019wakw heritage, is currently the City of Vancouver\u2019s Aboriginal Relations manager whose role is in managing the emerging understandings between First Nations communities and Vancouver\u2019s more recent inhabitants. Ginger\u2019s ultimate goal is to advance reconciliation and promote understanding of Vancouver as unceded territory.","attachment":1989,"link_new_tab":"false"}]} /-->',
+					'<!-- wp:planet4-blocks/columns {"columns_block_style":"icons","columns":[{"title":"Ginger Gosnell-Myers, Board Member","description":"Ginger, of Nisga\u2019a and Kwakwaka\u2019wakw heritage, is currently the City of Vancouver\u2019s Aboriginal Relations manager whose role is in managing the emerging understandings between First Nations communities and Vancouver\u2019s more recent inhabitants. Ginger\u2019s ultimate goal is to advance reconciliation and promote understanding of Vancouver as unceded territory.","attachment":1989,"link_new_tab":false}]} /-->',
 				],
 
 			'columns 4 columns icons ' =>
@@ -315,55 +211,6 @@ class P4_ShortcodeConverterTest extends P4_UnitTestCase {
 
 				'<!-- wp:planet4-blocks/cookies {"title":"Change your cookies preferences","description":"Please select which cookies you are willing to store.","necessary_cookies_name":"User-experience cookies","necessary_cookies_description":"These cookies will provide you a better experience of our website. You will be able to hide the cookies acceptance banner and use the website features better. The non-acceptance of these cookies will give you a cookie-free experience.","all_cookies_name":"Performance Cookies","all_cookies_description":"These cookies help improving the performance of Greenpeace.org/africa. They are set to collect data such as how long users stay on a page or which links are clicked. This helps us make better content based on your experience navigating the website.  Most web browsers allow some control over cookies through browser settings (e.g. notifications of new cookies, disabling cookies and deleting cookies).  Click your browser type below to go directly to the browser user guide to learn how to disable or erase cookies. "} /-->',
 			],
-
-		];
-	}
-
-	/**
-	 * Planet4 blocks shortocodes provider.
-	 *
-	 * @return array
-	 */
-	public function counter_shortcodes_provider(): array {
-		return [
-
-			// 1-5
-			[
-				'[shortcake_counter style = "arc" completed = "3000" target = "5000" text = "Signatures collected of 5000" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"arc","completed":3000,"target":5000,"text":"Signatures collected of 5000"} /-->',
-			],
-			[
-				'[shortcake_counter style = "bar" completed = "3000" target = "5000" text = "Signatures collected of 5000" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"bar","completed":3000,"target":5000,"text":"Signatures collected of 5000"} /-->',
-			],
-			[
-				'[shortcake_counter style = "plain" completed = "3000" target = "5000" text = "Signatures collected of 5000" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"plain","completed":3000,"target":5000,"text":"Signatures collected of 5000"} /-->',
-			],
-			[
-				'[shortcake_counter style = "arc" completed = "500" target = "1000" text = "%completed% signatures of %target%, only %remaining% to go!" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"arc","completed":500,"target":1000,"text":"%completed% signatures of %target%, only %remaining% to go!"} /-->',
-			],
-			[
-				'[shortcake_counter style = "plain" completed = "500" target = "1000" text = "%completed% signatures of %target%, only %remaining% to go!" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"plain","completed":500,"target":1000,"text":"%completed% signatures of %target%, only %remaining% to go!"} /-->',
-			],
-			[
-				'[shortcake_counter style = "bar" completed = "500" target = "1000" text = "%completed% signatures of %target%, only %remaining% to go!" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"bar","completed":500,"target":1000,"text":"%completed% signatures of %target%, only %remaining% to go!"} /-->',
-			],
-			[
-				'[shortcake_counter title="A global movement" description="People across the world are acting in the face of a Climate Emergency. The current number of global signers is..." style="plain" completed_api="https://counter.greenpeace.io/api/campaign/climate-emergency-letter" text="%completed%" /]',
-				'<!-- wp:planet4-blocks/counter {"title":"A global movement","description":"People across the world are acting in the face of a Climate Emergency. The current number of global signers is...","style":"plain","completed_api":"https://counter.greenpeace.io/api/campaign/climate-emergency-letter","text":"%completed%"} /-->',
-			],
-			[
-				'[shortcake_counter style="arc" completed="91170" target="91170" text="actieve leden" /]',
-				'<!-- wp:planet4-blocks/counter {"style":"arc","completed":91170,"target":91170,"text":"actieve leden"} /-->',
-			],
-
-			// 5-10
-
-			// 10-15
 
 		];
 	}

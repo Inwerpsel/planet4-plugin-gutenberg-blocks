@@ -1,21 +1,24 @@
 import {Component,Fragment} from "@wordpress/element";
 import {BlockControls,MediaUpload,MediaUploadCheck} from "@wordpress/editor";
 import {Preview} from '../../components/Preview';
-import {ImageOrButton} from '../../components/ImageOrButton/ImageOrButton';
+import {URLInput} from '../../components/URLInput/URLInput';
 import {
 	FormTokenField,
-	TextControl,
-	TextareaControl,
+  TextControl as BaseTextControl,
+  TextareaControl as BaseTextareaControl,
 	ServerSideRender,
-	ToggleControl,
 	SelectControl,
 	CheckboxControl,
 	Toolbar,
 	IconButton, Button
 } from '@wordpress/components';
+import withCharacterCounter from '../../components/withCharacterCounter/withCharacterCounter';
 
 const {apiFetch} = wp;
 const {addQueryArgs} = wp.url;
+
+const TextControl = withCharacterCounter( BaseTextControl );
+const TextareaControl = withCharacterCounter( BaseTextareaControl );
 
 export class Takeactionboxout extends Component {
 	constructor(props) {
@@ -102,22 +105,24 @@ export class Takeactionboxout extends Component {
 						value={this.props.custom_title}
 						onChange={this.props.onCustomTitleChange}
 						disabled={this.takeActionPageSelected()}
-					/>
+            characterLimit={60}
+          />
 					<TextareaControl
 						label={__('Custom Excerpt', 'p4ge')}
 						placeholder={__('Enter Custom Excerpt', 'p4ge')}
 						value={this.props.custom_excerpt}
 						onChange={this.props.onCustomExcerptChange}
 						disabled={this.takeActionPageSelected()}
-					/>
-					<TextControl
-						label={__('Custom Link', 'p4ge')}
-						placeholder={__('Enter Custom Link', 'p4ge')}
-						value={this.props.custom_link}
-						onChange={this.props.onCustomLinkChange}
-						disabled={this.takeActionPageSelected()}
-					/>
-					<TextControl
+            characterLimit={200}
+          />
+          <URLInput
+            label={__('Custom Link', 'p4ge')}
+            placeholder={__('Enter Custom Link', 'p4ge')}
+            value={this.props.custom_link}
+            onChange={this.props.onCustomLinkChange}
+            disabled={this.takeActionPageSelected()}
+          />
+          <TextControl
 						label={__('Custom Link Text', 'p4ge')}
 						placeholder={__('Enter Custom Link Text', 'p4ge')}
 						value={this.props.custom_link_text}

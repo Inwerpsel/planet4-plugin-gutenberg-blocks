@@ -9,6 +9,9 @@
 namespace P4GBKS;
 
 use WP_CLI;
+use P4GBKS\Command\Controller;
+use P4GBKS\Controllers\Ensapi_Controller;
+use P4GBKS\Controllers\Menu\Enform_Post_Controller;
 
 /**
  * Class Loader
@@ -88,6 +91,7 @@ final class Loader {
 	private function __construct( $services, $view_class ) {
 
 		$this->load_files();
+		$this->load_services( $services, $view_class );
 		$this->load_commands();
 		$this->check_requirements();
 
@@ -104,9 +108,13 @@ final class Loader {
 			new Blocks\Media(),
 			new Blocks\SocialMedia(),
 			new Blocks\SplitTwoColumns(),
+			new Blocks\Spreadsheet(),
 			new Blocks\SubMenu(),
+			new Blocks\SubPages(),
 			new Blocks\TakeActionBoxout(),
 			new Blocks\Timeline(),
+			new Blocks\SocialMediaCards(),
+			new Blocks\ENForm(),
 		];
 	}
 
@@ -141,6 +149,23 @@ final class Loader {
 	}
 
 	/**
+	 * Loads all shortcake blocks registered from within this plugin.
+	 *
+	 * @param array  $services The Controller services to inject.
+	 * @param string $view_class The View class name.
+	 */
+	public function load_services( $services, $view_class ) {
+		$this->services = $services;
+		$this->view     = new $view_class();
+
+		if ( $this->services ) {
+			foreach ( $this->services as $service ) {
+				( new $service( $this->view ) )->load();
+			}
+		}
+	}
+
+	/**
 	 * Registers commands for Blocks plugin.
 	 */
 	public function load_commands() {
@@ -148,7 +173,7 @@ final class Loader {
 			try {
 				WP_CLI::add_command(
 					'p4-gblocks',
-					'P4GBKS\Command\Controller'
+					Controller::class
 				);
 			} catch ( \Exception $e ) {
 				WP_CLI::log( 'Exception: ' . $e->getMessage() );
@@ -161,12 +186,14 @@ final class Loader {
 	 */
 	private function hook_plugin() {
 		add_action( 'admin_menu', [ $this, 'load_i18n' ] );
-		// Load the editor scripts.
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_editor_scripts' ] );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
+		// Load the editor scripts only enqueuing editor scripts while in context of the editor.
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_scripts' ] );
 
 		// Setup image sizes.
 		add_action( 'admin_init', [ $this, 'setup_image_sizes' ] );
+
+		// Set color palette.
+		add_action( 'admin_init', [ $this, 'set_color_palette' ] );
 
 		// Register a block category.
 		add_filter( 'block_categories', [ $this, 'register_block_category' ], 10, 2 );
@@ -233,6 +260,7 @@ final class Loader {
 		} else {
 			add_action( 'plugins_loaded', [ $this, 'load_i18n' ] );
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_campaigns_assets' ] );
 		}
 	}
 
@@ -288,37 +316,29 @@ final class Loader {
 		// but not in the admin side.
 		wp_enqueue_style(
 			'p4gbks_admin_style',
-			P4GBKS_PLUGIN_URL . 'editorStyle.min.css', // - Bundled CSS for the blocks
+			P4GBKS_PLUGIN_URL . 'assets/build/editorStyle.min.css', // - Bundled CSS for the blocks
 			[],
-			'0.2'
+			self::file_ver( P4GBKS_PLUGIN_DIR . '/assets/build/editorStyle.min.css' )
 		);
 
-		wp_enqueue_script(
-			'p4gbks_admin_script',
-			P4GBKS_PLUGIN_URL . 'admin/js/editor.js',
-			[],
-			'0.1',
-			true
-		);
+		self::enqueue_local_script( 'p4gbks_admin_script', 'admin/js/editor.js' );
 
 		// Enqueue editor script for all Blocks in this Plugin.
-		wp_enqueue_script(
-			'planet4-blocks-script',                       // - Script handler
-			P4GBKS_PLUGIN_URL . 'assets/build/editorIndex.js',                                     // - Bundled JS for the editor
+		self::enqueue_local_script(
+			'planet4-blocks-script',
+			'assets/build/editorIndex.js',
 			[
-				'wp-blocks',      // - Helpers for registering blocks
-				'wp-components',  // - Wordpress components
-				'wp-element',     // - WP React wrapper
-				'wp-data',        // - WP data helpers
-				'wp-i18n',        // - Exports the __() function
+				'wp-blocks',      // Helpers for registering blocks.
+				'wp-components',  // Wordpress components.
+				'wp-element',     // WP React wrapper.
+				'wp-data',        // WP data helpers.
+				'wp-i18n',        // Exports the __() function.
 				'wp-editor',
-			],
-			'0.1.7',
-			true
+				'wp-edit-post',
+			]
 		);
 
-		// Variables exposed from PHP to JS,
-		// WP calls this "localizing a script"...
+		// Variables reflected from PHP to JS.
 		$option_values = get_option( 'planet4_options' );
 
 		$reflection_vars = [
@@ -326,26 +346,75 @@ final class Loader {
 			'planet4_options' => $option_values,
 		];
 		wp_localize_script( 'planet4-blocks-script', 'p4ge_vars', $reflection_vars );
+
+		$reflection_vars = [
+			'home'  => P4GBKS_PLUGIN_URL . '/public/',
+			'pages' => $this->get_en_pages(),
+			'forms' => $this->get_en_forms(),
+		];
+		wp_localize_script( 'planet4-blocks-script', 'p4en_vars', $reflection_vars );
 	}
 
 	/**
 	 * Load assets for the frontend.
 	 */
 	public function enqueue_public_assets() {
-		// plugin-blocks assets.
-		$css_blocks_creation = filectime( P4GBKS_PLUGIN_DIR . '/assets/build/style.min.css' );
-
 		// Add master theme's main css as dependency for blocks css.
 		wp_enqueue_style(
 			'plugin-blocks',
-			P4GBKS_PLUGIN_URL . 'style.min.css',
+			P4GBKS_PLUGIN_URL . 'assets/build/style.min.css',
 			[
 				'bootstrap',
 				'slick',
 				'parent-style',
 			],
-			$css_blocks_creation
+			self::file_ver( P4GBKS_PLUGIN_DIR . '/assets/build/style.min.css' )
 		);
+
+		// Include React in the Frontend.
+		self::enqueue_local_script(
+			'planet4-blocks-frontend',
+			'assets/build/frontendIndex.js',
+			[
+				// WP React wrapper.
+				'wp-element',
+				// Exports the __() function.
+				'wp-i18n',
+				// Tools to get data from the REST API.
+				'wp-api-fetch',
+				// URL helpers (as addQueryArgs).
+				'wp-url',
+			]
+		);
+
+		self::enqueue_local_script( 'post_action', 'public/js/post_action.js', [ 'jquery' ] );
+	}
+
+	/**
+	 * Load assets for the frontend.
+	 */
+	public function enqueue_campaigns_assets() {
+		// campaign-theme assets.
+		$post_type = get_post_type();
+
+		if ( 'campaign' === $post_type ) {
+
+			$post = get_post();
+
+			$campaign_theme = $post->theme ?? $post->custom['_campaign_page_template'] ?? null;
+
+			if ( is_string( $campaign_theme ) && ! empty( $campaign_theme ) ) {
+
+				wp_enqueue_style(
+					'theme_antarctic',
+					P4GBKS_PLUGIN_URL . "/assets/build/theme_$campaign_theme.min.css",
+					[
+						'plugin-blocks',
+					],
+					self::file_ver( P4GBKS_PLUGIN_DIR . "/assets/build/theme_$campaign_theme.min.css" )
+				);
+			}
+		}
 	}
 
 	/**
@@ -371,31 +440,243 @@ final class Loader {
 	public function load_i18n() {
 		load_plugin_textdomain( 'planet4-blocks', false, P4GBKS_PLUGIN_DIRNAME . '/languages/' );
 		load_plugin_textdomain( 'planet4-blocks-backend', false, P4GBKS_PLUGIN_DIRNAME . '/languages/' );
+
+		// Load EN translations.
+		load_plugin_textdomain( 'planet4-engagingnetworks', false, P4GBKS_PLUGIN_DIRNAME . '/languages/enform/' );
+		load_plugin_textdomain( 'planet4-engagingnetworks-backend', false, P4GBKS_PLUGIN_DIRNAME . '/languages/enform/' );
 	}
 
 	/**
-	 * Registers a new category for our blocks
+	 * Registers new categories for our blocks.
 	 *
-	 * @param array $categories Blocks categories.
+	 * @param array $core_categories Default blocks categories.
 	 *
 	 * @return array
 	 */
-	public function register_block_category( $categories ) {
-		// get_block_categories method at wp-admin/includes/post.php has some hardcoded (!!!) default categories
-		// index 0 holds common blocks menu entry data, so it seems safe to do the bellow array operations.
-		$common = [
-			$categories[0],
+	public function register_block_category( $core_categories ) {
+
+		$our_categories = [
+			[
+				'slug'  => 'planet4-blocks',
+				'title' => __( 'Planet 4 Blocks', 'planet4-blocks' ),
+			],
+
+			[
+				'slug'  => 'planet4-blocks-beta',
+				'title' => __( 'Planet 4 Blocks - BETA', 'planet4-blocks' ),
+			],
 		];
 
-		$categories[0] = [
-			'slug'  => 'planet4-blocks',
-			'title' => __( 'Planet 4 Blocks', 'planet4-blocks' ),
-		];
+		return array_merge( $our_categories, $core_categories );
+	}
 
-		return array_merge(
-			$common,
-			$categories
+
+	/**
+	 * Registers a new color palette for all native blocks
+	 */
+	public function set_color_palette() {
+		add_theme_support(
+			'editor-color-palette',
+			[
+				[
+					'name'  => __( 'Grey 80%', 'planet4-blocks-backend' ),
+					'slug'  => 'grey-80',
+					'color' => '#020202',
+				],
+				[
+					'name'  => __( 'Grey 60%', 'planet4-blocks-backend' ),
+					'slug'  => 'grey-60',
+					'color' => '#666666',
+				],
+				[
+					'name'  => __( 'Grey 40%', 'planet4-blocks-backend' ),
+					'slug'  => 'grey-40',
+					'color' => '#999999',
+				],
+				[
+					'name'  => __( 'Grey 20%', 'planet4-blocks-backend' ),
+					'slug'  => 'grey-20',
+					'color' => '#cccccc',
+				],
+				[
+					'name'  => __( 'Grey 10%', 'planet4-blocks-backend' ),
+					'slug'  => 'grey-10',
+					'color' => '#e5e5e5',
+				],
+				[
+					'name'  => __( 'Grey', 'planet4-blocks-backend' ),
+					'slug'  => 'grey',
+					'color' => '#333333',
+				],
+				[
+					'name'  => __( 'Green', 'planet4-blocks-backend' ),
+					'slug'  => 'green',
+					'color' => '#003300',
+				],
+				[
+					'name'  => __( 'Green 80%', 'planet4-blocks-backend' ),
+					'slug'  => 'green-80',
+					'color' => '#1b4a1b',
+				],
+				[
+					'name'  => __( 'GP Green', 'planet4-blocks-backend' ),
+					'slug'  => 'gp-green',
+					'color' => '#66cc00',
+				],
+				[
+					'name'  => __( 'Dark Tiber', 'planet4-blocks-backend' ),
+					'slug'  => 'dark-tiber',
+					'color' => '#052a30',
+				],
+				[
+					'name'  => __( 'Genoa', 'planet4-blocks-backend' ),
+					'slug'  => 'genoa',
+					'color' => '#186a70',
+				],
+				[
+					'name'  => __( 'Inch Worm', 'planet4-blocks-backend' ),
+					'slug'  => 'inch-worm',
+					'color' => '#a7e021',
+				],
+				[
+					'name'  => __( 'X Dark Blue', 'planet4-blocks-backend' ),
+					'slug'  => 'x-dark-blue',
+					'color' => '#042233',
+				],
+				[
+					'name'  => __( 'All Ports', 'planet4-blocks-backend' ),
+					'slug'  => 'allports',
+					'color' => '#007799',
+				],
+				[
+					'name'  => __( 'Spray', 'planet4-blocks-backend' ),
+					'slug'  => 'spray',
+					'color' => '#86eee7',
+				],
+				[
+					'name'  => __( 'Dark Blue', 'planet4-blocks-backend' ),
+					'slug'  => 'dark-blue',
+					'color' => '#074365',
+				],
+				[
+					'name'  => __( 'Blue', 'planet4-blocks-backend' ),
+					'slug'  => 'blue',
+					'color' => '#2077bf',
+				],
+				[
+					'name'  => __( 'Blue 60%', 'planet4-blocks-backend' ),
+					'slug'  => 'blue-60',
+					'color' => '#63bbfd',
+				],
+				[
+					'name'  => __( 'Crimson', 'planet4-blocks-backend' ),
+					'slug'  => 'crimson',
+					'color' => '#e51538',
+				],
+				[
+					'name'  => __( 'Orange Hover', 'planet4-blocks-backend' ),
+					'slug'  => 'orange-hover',
+					'color' => '#ee562d',
+				],
+				[
+					'name'  => __( 'Yellow', 'planet4-blocks-backend' ),
+					'slug'  => 'yellow',
+					'color' => '#ffd204',
+				],
+			]
 		);
+
+		// Disable custom color option.
+		add_theme_support( 'disable-custom-colors' );
+
+		// Disable gradient presets & custom gradients.
+		add_theme_support( 'editor-gradient-presets', [] );
+		add_theme_support( 'disable-custom-gradients' );
+	}
+
+	/**
+	 * @param string $filepath Absolute path to the file.
+	 * @return int timestamp of file creation
+	 */
+	public static function file_ver( string $filepath ): int {
+		$ctime = filectime( $filepath );
+		if ( $ctime ) {
+			return $ctime;
+		}
+
+		return time();
+	}
+
+	/**
+	 * Enqueue a local, publicly accessible script.
+	 *
+	 * @see wp_enqueue_script()
+	 *
+	 * @param string   $handle    Name of the script. Should be unique.
+	 * @param string   $rel_path  Path to the script, relative to P4GBKS_PLUGIN_DIR.
+	 * @param string[] $deps      Optional. An array of registered script handles this script depends on. Default empty array.
+	 * @param bool     $in_footer Optional. Whether to enqueue the script before </body> instead of in the <head>.
+	 *                                Default 'false'.
+	 */
+	public static function enqueue_local_script(
+		string $handle,
+		string $rel_path,
+		array $deps = [],
+		bool $in_footer = true
+	): void {
+		wp_enqueue_script(
+			$handle,
+			trailingslashit( P4GBKS_PLUGIN_URL ) . $rel_path,
+			$deps,
+			self::file_ver( trailingslashit( P4GBKS_PLUGIN_DIR ) . $rel_path ),
+			$in_footer
+		);
+	}
+
+	/**
+	 * Get all available EN pages.
+	 */
+	public function get_en_pages() {
+		// Get EN pages only on admin panel.
+		if ( ! is_admin() ) {
+			return [];
+		}
+
+		$pages         = [];
+		$main_settings = get_option( 'p4en_main_settings' );
+
+		if ( isset( $main_settings['p4en_private_api'] ) ) {
+			$pages[]           = $main_settings['p4en_private_api'];
+			$ens_private_token = $main_settings['p4en_private_api'];
+			$ens_api           = new Ensapi_Controller( $ens_private_token );
+			$pages             = $ens_api->get_pages_by_types_status( Blocks\ENForm::ENFORM_PAGE_TYPES, 'live' );
+			uasort(
+				$pages,
+				function ( $a, $b ) {
+					return ( $a['name'] ?? '' ) <=> ( $b['name'] ?? '' );
+				}
+			);
+		}
+
+		return $pages;
+	}
+
+	/**
+	 * Get all available EN forms.
+	 */
+	public function get_en_forms() {
+		// Get EN Forms.
+		$query = new \WP_Query(
+			[
+				'post_status'      => 'publish',
+				'post_type'        => Enform_Post_Controller::POST_TYPE,
+				'orderby'          => 'post_title',
+				'order'            => 'asc',
+				'suppress_filters' => false,
+				'posts_per_page'   => -1,
+			]
+		);
+		return $query->posts;
 	}
 
 	/**

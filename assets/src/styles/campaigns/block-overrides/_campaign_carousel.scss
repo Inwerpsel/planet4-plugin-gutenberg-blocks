@@ -1,0 +1,148 @@
+@mixin campaign_carousel($bordered, $background, $caption, $indicator, $indicator-current, $icon-svg, $icon-size, $indicator-size: 8px) {
+  h1 {
+    @extend .page-section-header;
+    margin-bottom: 40px;
+  }
+
+  $spacing: 0;
+  @if ($bordered) {
+    $spacing: $space-md;
+    padding-bottom: $space-xxl;
+  }
+
+  .carousel-inner {
+    background: $background;
+
+    .carousel-item {
+      padding: $spacing;
+    }
+  }
+
+  .carousel-item-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-caption {
+    color: $caption;
+    background: $background;
+    position: absolute;
+    text-align: left;
+    padding: $space-sm;
+    @include letter-spacing(20);
+
+    @include mobile-only {
+      position: relative;
+      z-index: 10;
+      padding: $n20 $n15 $n60 $n15;
+      color: $white;
+    }
+
+    @if ($bordered == false) {
+      padding-bottom: 60px;
+
+      @include mobile-only {
+        padding-left: $space-lg;
+        padding-right: $space-lg;
+      }
+    }
+
+    @include small-and-up {
+      padding-left: $space-sm;
+      padding-right: $space-sm;
+    }
+
+    @include medium-and-up {
+      @if ($bordered) {
+        padding-left: $space-xxl;
+        padding-right: $space-xxl;
+      }
+      @else {
+        padding-left: $space-xxl * 2;
+        padding-right: $space-xxl * 2;
+      }
+    }
+
+    p {
+      font-size: $font-size-sm;
+      line-height: 1.5625rem;
+      margin: 0;
+
+      @include medium-and-up {
+        font-size: 1.125rem;
+        line-height: 1.875rem;
+      }
+
+      & + p {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .carousel-indicators {
+    right: 0;
+    left: 0;
+    margin: 0;
+    @if ($bordered) {
+      bottom: -30px;
+    }
+    @else {
+      bottom: 30px;
+    }
+
+    li {
+      width: $indicator-size;
+      height: $indicator-size;
+      margin: 0 12px;
+      border-radius: 0;
+      background: $indicator;
+
+      &.active {
+        background: $indicator-current;
+      }
+    }
+  }
+
+  .carousel-control-prev {
+    left: -#{$spacing};
+
+    &-icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  .carousel-control-next {
+    right: -#{$spacing};
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 100px;
+    margin: 0;
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    height: 100px;
+    text-align: center;
+    display: flex;
+    z-index: 2000;
+
+    @include medium-and-up {
+      @if ($bordered) {
+        width: 128px;
+      }
+      @else {
+        width: 150px;
+      }
+    }
+
+    &-icon {
+      background: $icon-svg no-repeat;
+      background-size: contain;
+      vertical-align: middle;
+      margin: 0;
+      width: $icon-size;
+      height: $icon-size;
+    }
+  }
+}

@@ -1,12 +1,17 @@
 import {Component,Fragment} from "@wordpress/element";
 import {
-  TextControl,
-  TextareaControl,
+  TextControl as BaseTextControl,
+  TextareaControl as BaseTextareaControl,
   ServerSideRender
 } from '@wordpress/components';
 import {MediaPlaceholder} from "@wordpress/editor";
 
 import {Preview} from '../../components/Preview';
+import withCharacterCounter from '../../components/withCharacterCounter/withCharacterCounter';
+import {URLInput} from "../../components/URLInput/URLInput";
+
+const TextControl = withCharacterCounter( BaseTextControl );
+const TextareaControl = withCharacterCounter( BaseTextareaControl );
 
 export class Media extends Component {
     constructor(props) {
@@ -26,14 +31,16 @@ export class Media extends Component {
               placeholder={__('Enter video title', 'p4ge')}
               value={video_title}
               onChange={this.props.onTitleChange}
+              characterLimit={40}
             />
             <TextareaControl
               label={__('Description', 'p4ge')}
               help={__('(Optional)', 'p4ge')}
               value={description}
               onChange={this.props.onDescriptionChange}
+              characterLimit={400}
             />
-            <TextControl
+            <URLInput
               label={__('Media URL/ID', 'p4ge')}
               placeholder={__('Enter URL', 'p4ge')}
               value={youtube_id}

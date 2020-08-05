@@ -1,7 +1,7 @@
 import {Component,Fragment} from "@wordpress/element";
 import {
-  TextControl,
-  TextareaControl,
+  TextControl as BaseTextControl,
+  TextareaControl as BaseTextareaControl,
   FocalPointPicker,
   ServerSideRender,
   SelectControl
@@ -10,6 +10,11 @@ import {BlockControls,MediaUpload,MediaUploadCheck} from "@wordpress/editor";
 
 import {Preview} from '../../components/Preview';
 import {ImageOrButton} from '../../components/ImageOrButton/ImageOrButton';
+import withCharacterCounter from '../../components/withCharacterCounter/withCharacterCounter';
+import {URLInput} from "../../components/URLInput/URLInput";
+
+const TextControl = withCharacterCounter( BaseTextControl );
+const TextareaControl = withCharacterCounter( BaseTextareaControl );
 
 export class Splittwocolumns extends Component {
     constructor(props) {
@@ -77,6 +82,7 @@ export class Splittwocolumns extends Component {
               value={title}
               onChange={this.props.onIssueTitleChange}
               help={__('(Optional) Fill this only if you need to override issue title.', 'p4ge')}
+              characterLimit={40}
             />
             <TextareaControl
               label={__('Issue Description', 'p4ge')}
@@ -84,6 +90,7 @@ export class Splittwocolumns extends Component {
               help={__('(Optional) Fill this only if you need to override issue description.', 'p4ge')}
               value={issue_description}
               onChange={this.props.onIssueDescriptionChange}
+              characterLimit={400}
             />
             <TextControl
               label={__('Issue link text', 'p4ge')}
@@ -140,6 +147,7 @@ export class Splittwocolumns extends Component {
               help={__('(Optional)', 'p4ge')}
               value={tag_description}
               onChange={this.props.onTagDescriptionChange}
+              characterLimit={400}
             />
             <TextControl
               label={__('Campaign button text', 'p4ge')}
@@ -148,7 +156,7 @@ export class Splittwocolumns extends Component {
               onChange={this.props.onButtonTextChange}
               help={__('(Optional)', 'p4ge')}
             />
-            <TextControl
+            <URLInput
               label={__('Campaign button link', 'p4ge')}
               placeholder={__('Enter button link', 'p4ge')}
               value={button_link}
